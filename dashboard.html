@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Federal Recompete Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* USWDS 계열 — 흰 바탕, 남색, 직각, 표 중심 */
+:root{
+  --navy:#162e51; --blue:#005ea2; --blue-dark:#1a4480; --blue-bg:#eff6fb;
+  --ink:#1b1b1b; --ink-2:#565c65; --ink-3:#71767a;
+  --bg:#ffffff; --bg-2:#f0f0f0; --bg-3:#f9f9f7;
+  --border:#dfe1e2; --border-2:#a9aeb1;
+  --red:#b50909; --red-bg:#f8e1de;
+  --gold:#936f38; --gold-bg:#faf3d1;
+  --green:#216e1f; --green-bg:#e3f0e3;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);
+  font-family:"Public Sans","Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;
+  font-size:15px;line-height:1.55}
+a{color:var(--blue)}
+.num{font-variant-numeric:tabular-nums}
+
+.govbar{background:var(--bg-2);border-bottom:1px solid var(--border);
+  font-size:12px;color:var(--ink-2);padding:5px 0}
+.gb-in{max-width:1120px;margin:0 auto;padding:0 16px}
+.site{background:var(--bg);border-bottom:1px solid var(--border)}
+.site-in{max-width:1120px;margin:0 auto;padding:14px 16px 0;display:flex;
+  flex-wrap:wrap;align-items:baseline;gap:8px 22px}
+.brand{font-size:21px;font-weight:700;color:var(--navy);letter-spacing:-.01em}
+.brand small{font-weight:400;color:var(--ink-3);font-size:12.5px;margin-left:8px}
+.nav{display:flex;gap:2px;margin-left:auto}
+.nav button{border:none;background:none;font-family:inherit;font-size:14px;
+  padding:10px 14px 12px;cursor:pointer;color:var(--ink-2);
+  border-bottom:3px solid transparent;font-weight:600}
+.nav button.on{color:var(--navy);border-bottom-color:var(--blue)}
+.nav button:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+.page{max-width:1120px;margin:0 auto;padding:20px 16px 64px}
+.asof{font-size:12px;color:var(--ink-3);margin:0 0 14px}
+.asof button{border:none;background:none;color:var(--blue);text-decoration:underline;
+  cursor:pointer;font:inherit;padding:0;margin-left:8px}
+
+/* ── 브리핑 ── */
+.brief{border:1px solid var(--border);border-top:4px solid var(--navy);
+  background:var(--bg);padding:0 0 6px;margin:0 0 22px}
+.brief-hd{display:flex;align-items:baseline;gap:12px;padding:14px 20px 0}
+.brief-hd h2{font-size:17px;font-weight:800;color:var(--navy);margin:0;letter-spacing:.01em}
+.brief-hd .d{font-size:12px;color:var(--ink-3)}
+.brief-lead{padding:10px 20px 4px;font-size:16.5px;line-height:1.75;max-width:62em}
+.brief-lead .hl{background:var(--red-bg);color:var(--red);font-weight:700;padding:0 4px}
+.brief-lead .hl2{background:var(--gold-bg);color:var(--gold);font-weight:700;padding:0 4px}
+.brief-body{padding:2px 20px 10px;font-size:14px;color:var(--ink-2);line-height:1.8;max-width:66em}
+.brief-body b{color:var(--ink)}
+.jump{color:var(--blue);text-decoration:underline;cursor:pointer;text-underline-offset:2px}
+
+/* ── 2단: 분포(클릭=필터) + 주시 목록 ── */
+.duo{display:grid;grid-template-columns:5fr 7fr;gap:18px;margin:0 0 22px}
+@media(max-width:880px){.duo{grid-template-columns:1fr}}
+.panel{border:1px solid var(--border)}
+.panel-hd{background:var(--bg-2);border-bottom:1px solid var(--border);
+  padding:8px 14px;font-size:12.5px;font-weight:700;color:var(--ink);
+  display:flex;justify-content:space-between;align-items:baseline}
+.panel-hd small{font-weight:400;color:var(--ink-3);font-size:11px}
+.dist{padding:10px 14px 12px}
+.dist h4{font-size:11.5px;color:var(--ink-2);margin:10px 0 6px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.04em}
+.dist h4:first-child{margin-top:2px}
+.drow{display:grid;grid-template-columns:118px 1fr 40px;gap:8px;align-items:center;
+  padding:2.5px 0;cursor:pointer;border:none;background:none;width:100%;
+  font:inherit;text-align:left;color:inherit}
+.drow:hover .dl,.drow:hover .dv{color:var(--blue);text-decoration:underline}
+.drow:focus-visible{outline:2px solid var(--blue)}
+.dl{font-size:12.5px;color:var(--ink-2);line-height:1.3}
+.dtrack{display:block;height:14px;background:var(--bg-2)}
+.dfill{display:block;height:100%;background:var(--blue)}
+.dfill.red{background:var(--red)}
+.dv{font-size:12px;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+
+.watch{padding:4px 0 2px}
+.witem{display:grid;grid-template-columns:34px 1fr;gap:12px;padding:11px 14px;
+  border-bottom:1px solid var(--border);cursor:pointer;border-left:4px solid transparent}
+.witem:last-child{border-bottom:none}
+.witem:hover{background:var(--blue-bg)}
+.witem:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+.wrank{font-size:19px;font-weight:800;color:var(--border-2);text-align:center;padding-top:2px}
+.witem:nth-child(1) .wrank,.witem:nth-child(2) .wrank,.witem:nth-child(3) .wrank{color:var(--red)}
+.wt{font-size:14px;font-weight:600;color:var(--blue);text-decoration:underline;
+  text-underline-offset:2px;line-height:1.4}
+.wm{font-size:12.5px;color:var(--ink-2);margin-top:2px;line-height:1.6}
+.wm b{color:var(--red);font-weight:700}
+.wm .sep{color:var(--border-2);margin:0 5px}
+
+/* ── 요약 숫자줄 ── */
+.sumline{display:flex;flex-wrap:wrap;border-top:2px solid var(--navy);
+  border-bottom:1px solid var(--border);margin:0 0 16px}
+.sum{flex:1 1 150px;padding:12px 18px 12px 0;border-right:1px solid var(--border)}
+.sum:last-child{border-right:none}
+.sum+.sum{padding-left:18px}
+.sum .v{font-size:26px;font-weight:700;color:var(--navy);line-height:1.1}
+.sum .v.warn{color:var(--red)}
+.sum .k{font-size:12px;color:var(--ink-2);margin-top:3px;line-height:1.4}
+
+/* ── 필터/테이블 ── */
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;
+  background:var(--bg-3);border:1px solid var(--border);padding:12px 14px;margin:0 0 0}
+.ctl{display:flex;flex-direction:column;gap:3px}
+.ctl label{font-size:11.5px;font-weight:600;color:var(--ink-2)}
+.ctl select,.ctl input[type=search]{font:inherit;font-size:13.5px;padding:6px 8px;
+  border:1px solid var(--border-2);background:var(--bg);color:var(--ink);border-radius:0;min-width:126px}
+.ctl input[type=search]{min-width:190px}
+.ctl select:focus,.ctl input:focus{outline:2px solid var(--blue);outline-offset:1px}
+.ctl.grow{flex:1}
+.hits{font-size:12.5px;color:var(--ink-2);margin-left:auto;padding-bottom:7px;white-space:nowrap}
+.fchip{display:inline-flex;align-items:center;gap:6px;background:var(--blue-bg);
+  border:1px solid var(--blue);color:var(--blue-dark);font-size:12px;font-weight:600;
+  padding:3px 8px;margin-bottom:7px}
+.fchip button{border:none;background:none;color:var(--blue-dark);cursor:pointer;
+  font-size:13px;padding:0;line-height:1}
+.tblwrap{overflow-x:auto;border:1px solid var(--border);border-top:none}
+table{border-collapse:collapse;width:100%;min-width:860px;font-size:13.5px}
+thead th{background:var(--bg-2);text-align:left;padding:8px 12px;font-size:12px;
+  color:var(--ink);border-bottom:2px solid var(--border-2);white-space:nowrap;
+  cursor:pointer;user-select:none}
+thead th .arr{color:var(--blue);font-size:10px}
+tbody td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+tbody tr.row{cursor:pointer}
+tbody tr.row:hover,tbody tr.row.open{background:var(--blue-bg)}
+td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.t-title{font-weight:600;color:var(--blue);text-decoration:underline;text-underline-offset:2px}
+.t-org{color:var(--ink-2);font-size:12.5px;margin-top:1px}
+.flag{display:inline-block;font-size:11px;font-weight:700;padding:1.5px 7px;
+  white-space:nowrap;margin-right:4px}
+.flag.late{background:var(--red-bg);color:var(--red)}
+.flag.repub{background:var(--gold-bg);color:var(--gold)}
+.flag.soon{background:var(--green-bg);color:var(--green)}
+
+/* 상세 + 일정 타임라인 */
+tr.detail td{background:var(--bg-3);border-bottom:1px solid var(--border-2);padding:16px 18px}
+.d-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.d-grid{grid-template-columns:1fr}}
+.d-h{font-size:11.5px;font-weight:700;color:var(--ink-2);text-transform:uppercase;
+  letter-spacing:.05em;margin:0 0 7px}
+.d-trg{border-left:4px solid var(--red);background:var(--bg);padding:8px 12px;
+  margin:0 0 6px;font-size:13px}
+.d-kv{font-size:13px;line-height:1.7}
+.d-kv b{display:inline-block;min-width:96px;color:var(--ink-2);font-weight:400}
+.d-act{font-size:13.5px;margin:0;padding-left:20px}
+.d-act li{margin:4px 0}
+.tl{margin:4px 0 14px;padding:12px 14px;background:var(--bg);border:1px solid var(--border)}
+.tl-bar{position:relative;height:6px;background:var(--bg-2);margin:22px 6px 26px}
+.tl-seg{position:absolute;top:0;height:6px;background:var(--gold)}
+.tl-dot{position:absolute;top:-4px;width:14px;height:14px;border-radius:50%;
+  background:var(--bg);border:3px solid var(--blue);transform:translateX(-50%)}
+.tl-dot.red{border-color:var(--red)}
+.tl-dot.today{background:var(--navy);border-color:var(--navy);width:10px;height:10px;top:-2px}
+.tl-lab{position:absolute;font-size:10.5px;color:var(--ink-2);transform:translateX(-50%);
+  white-space:nowrap;top:-22px}
+.tl-lab.below{top:12px}
+.tl-lab b{color:var(--ink)}
+
+.notice{border:1px solid var(--border);border-left:4px solid var(--blue);
+  background:var(--bg-3);padding:14px 16px;font-size:14px}
+.notice code{background:var(--bg-2);padding:1px 6px;font-size:13px}
+.secttl{font-size:16px;font-weight:700;color:var(--navy);margin:24px 0 8px}
+.foot{max-width:1120px;margin:28px auto 0;padding:14px 16px 40px;border-top:1px solid var(--border);
+  font-size:12px;color:var(--ink-2);line-height:1.7}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="govbar"><div class="gb-in" id="srcLabel">데이터 불러오는 중…</div></div>
+<div class="site"><div class="site-in">
+  <span class="brand">Federal Recompete Monitor<small>DHS 조달예보 변화 추적</small></span>
+  <nav class="nav">
+    <button class="on" id="tabUS">US · DHS APFS</button>
+    <button id="tabKR">KR · 나라장터</button>
+  </nav>
+</div></div>
+
+<div class="page">
+  <div id="viewUS">
+    <p class="asof" id="asof"></p>
+
+    <div class="brief" id="brief" hidden>
+      <div class="brief-hd"><h2>오늘의 브리핑</h2><span class="d" id="briefDate"></span></div>
+      <p class="brief-lead" id="briefLead"></p>
+      <div class="brief-body" id="briefBody"></div>
+    </div>
+
+    <div class="duo" id="duo" hidden>
+      <div class="panel">
+        <div class="panel-hd">분포 <small>항목을 클릭하면 아래 목록이 필터링됩니다</small></div>
+        <div class="dist" id="dist"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hd">지금 주시할 5건 <small>신호 강도순 · 클릭하면 상세로 이동</small></div>
+        <div class="watch" id="watch"></div>
+      </div>
+    </div>
+
+    <div class="sumline" id="sumline"></div>
+
+    <div id="tableTop"></div>
+    <div class="controls">
+      <div class="ctl"><label for="fState">상태</label>
+        <select id="fState">
+          <option value="all">전체</option>
+          <option value="slip">공고예정일 경과</option>
+          <option value="repub">최근 재게시</option>
+          <option value="soon">90일 내 공고 예정</option>
+        </select></div>
+      <div class="ctl"><label for="fOrg">기관</label><select id="fOrg"><option value="all">전체</option></select></div>
+      <div class="ctl"><label for="fVal">금액대</label>
+        <select id="fVal">
+          <option value="all">전체</option>
+          <option value="big">$50M 이상</option>
+          <option value="mid">$5M – $50M</option>
+          <option value="small">$5M 미만</option>
+        </select></div>
+      <div class="ctl grow"><label for="q">검색</label>
+        <input id="q" type="search" placeholder="사업명, 수행업체, 계약번호"></div>
+      <span class="hits"><span id="chipHost"></span><span id="cnt"></span></span>
+    </div>
+    <div class="tblwrap">
+      <table>
+        <thead><tr>
+          <th data-s="heat">신호 <span class="arr">▼</span></th>
+          <th data-s="title">요구사항 / 기관</th>
+          <th data-s="incumbent">현 수행업체</th>
+          <th data-s="value">금액대</th>
+          <th data-s="sol">예상 공고일</th>
+          <th data-s="pub">예보 게시</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="viewKR" hidden><div id="krBody"></div></div>
+</div>
+<p class="foot" id="foot"></p>
+
+<script>
+(function(){
+  var US=[], SORT="heat", DESC=true, OPEN=null;
+  var F={state:"all",org:"all",val:"all",q:"",veh:null,bucket:null};
+  function $(id){return document.getElementById(id);}
+  function esc(s){var d=document.createElement("div");d.textContent=s==null?"":String(s);return d.innerHTML;}
+  function pd(s){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||"");return m?new Date(+m[1],+m[2]-1,+m[3]):null;}
+  var TODAY=null;
+
+  function loadUS(refresh){
+    fetch("/api/us"+(refresh?"?refresh=1":"")).then(function(r){return r.json();}).then(function(d){
+      US=d.records||[]; TODAY=pd(d.as_of)||new Date();
+      $("srcLabel").textContent="공식 출처: DHS Acquisition Planning Forecast System (apfs-cloud.dhs.gov) · 데이터: "+d.source;
+      $("asof").innerHTML="기준일 "+d.as_of+" · 추적 대상 "+US.length+"건"
+        +'<button id="rf">최신 데이터로 갱신</button>';
+      $("rf").onclick=function(){this.textContent="갱신 중…";loadUS(true);};
+      buildOrg(); briefing(d.as_of); distributions(); watchlist(); renderSum(); render();
+      $("foot").textContent="이 화면의 모든 수치와 문장은 DHS APFS 공개 레코드의 원문 필드에서 사전 정의된 규칙으로 계산·조립됩니다. "
+        +"언어모델이 생성한 수치나 판단은 없습니다. 예보는 계획 정보이며 확정 조달 일정이 아닙니다. 실제 공고 여부는 SAM.gov 기준으로 확인하십시오.";
+    });
+  }
+
+  /* ── 통계 ── */
+  function stats(){
+    var n=US.length, slip=[], rep14=[], soon=[], big=[], bigLate=[];
+    var orgC={}, vehC={};
+    US.forEach(function(r){
+      if(r.slipped) slip.push(r);
+      if(r.republished&&r.published_days_ago!=null&&r.published_days_ago<=14) rep14.push(r);
+      if(!r.slipped&&r.days_to_sol!=null&&r.days_to_sol<=90) soon.push(r);
+      if(/(\$50M|100M)/.test(r.value||"")){ big.push(r); if(r.slipped) bigLate.push(r); }
+      var o=(r.org||"").split("/")[0]||"기타"; orgC[o]=(orgC[o]||0)+1;
+      var v=r.vehicle||"기타"; vehC[v]=(vehC[v]||0)+1;
+    });
+    var days=slip.map(function(r){return -r.days_to_sol;}).sort(function(a,b){return a-b;});
+    var med=days.length?days[Math.floor(days.length/2)]:0;
+    var worst=slip.length?slip.reduce(function(a,b){return -a.days_to_sol>-b.days_to_sol?a:b;}):null;
+    function top(c){return Object.keys(c).map(function(k){return [k,c[k]];})
+      .sort(function(a,b){return b[1]-a[1];});}
+    var repSlip=rep14.filter(function(r){return r.slipped;});
+    return {n:n,slip:slip,rep14:rep14,repSlip:repSlip,soon:soon,big:big,bigLate:bigLate,
+            med:med,worst:worst,orgs:top(orgC),vehs:top(vehC)};
+  }
+
+  /* ── 브리핑 (규칙 기반 문장 조립) ── */
+  function briefing(asof){
+    var st=stats(); if(!st.n) return;
+    $("brief").hidden=false; $("briefDate").textContent=asof+" 기준 자동 생성";
+    var pct=Math.round(100*st.slip.length/st.n);
+    $("briefLead").innerHTML=
+      '추적 중인 DHS IT·사이버 후속계약 '+st.n+'건 중 <span class="hl">'+st.slip.length+'건('+pct+'%)이 예상 공고일을 넘긴 채</span> '
+      +'아직 공고되지 않았습니다. 지연 중앙값은 <b>'+st.med+'일</b> — 이 구간의 요구사항은 규격이 확정되지 않았을 가능성이 높고, '
+      +'그만큼 <b>지금 접촉하는 업체가 규격 논의에 들어갈 여지</b>가 있습니다.';
+    var b=[];
+    if(st.rep14.length){
+      b.push('최근 14일 사이 <b>'+st.rep14.length+'건의 예보가 다시 게시</b>됐습니다'
+        +(st.repSlip.length?' — 그중 <b>'+st.repSlip.length+'건은 공고예정일이 이미 지난 상태에서 재게시</b>된 것으로, 조달이 살아 있고 임박했다는 가장 강한 신호입니다':'')
+        +'. <span class="jump" data-j="repub">재게시 건 보기 →</span>');
+    }
+    if(st.bigLate.length){
+      var ex=st.bigLate[0];
+      b.push('$50M 이상 대형 요구사항 '+st.big.length+'건 중 <b>'+st.bigLate.length+'건이 지연 상태</b>입니다. '
+        +'가장 큰 건은 <span class="jump" data-o="'+esc(ex.entity_id)+'">'+esc(ex.title)+'</span>'
+        +' (현 수행업체 '+esc(ex.incumbent||"미상")+', '+(-ex.days_to_sol)+'일 경과).');
+    }
+    if(st.worst){
+      b.push('최장 지연은 <span class="jump" data-o="'+esc(st.worst.entity_id)+'">'+esc(st.worst.title)+'</span> — '
+        +'<b>'+(-st.worst.days_to_sol)+'일</b>. 이 정도 지연은 취소 또는 브릿지 계약 가능성도 함께 봐야 합니다.');
+    }
+    if(st.orgs.length&&st.vehs.length){
+      b.push('집중도: 기관은 <b>'+esc(st.orgs[0][0])+'</b>('+st.orgs[0][1]+'건, '
+        +Math.round(100*st.orgs[0][1]/st.n)+'%), 비히클은 <b>'+esc(st.vehs[0][0])+'</b>('+st.vehs[0][1]+'건)에 몰려 있습니다. '
+        +'이 두 조건을 가진 업체가 이 목록의 최우선 대상입니다.');
+    }
+    $("briefBody").innerHTML=b.map(function(x){return "<p style='margin:6px 0'>"+x+"</p>";}).join("");
+    $("briefBody").querySelectorAll(".jump").forEach(function(el){
+      el.addEventListener("click",function(){
+        if(el.dataset.j){ setChip(el.dataset.j); }
+        else if(el.dataset.o){ clearFilters(); OPEN=el.dataset.o; render(); scrollToRow(el.dataset.o); }
+      });
+    });
+  }
+
+  /* ── 분포 (클릭=필터) ── */
+  function distributions(){
+    var st=stats(); if(!st.n) return;
+    $("duo").hidden=false;
+    var h="";
+    function block(title, rows, onclickKey, redSet){
+      var max=Math.max.apply(null,rows.map(function(r){return r[1];}))||1;
+      h+="<h4>"+title+"</h4>";
+      rows.forEach(function(r){
+        var red=redSet&&redSet[r[0]];
+        h+='<button class="drow" data-k="'+onclickKey+'" data-v="'+esc(r[0])+'">'
+          +'<span class="dl">'+esc(r[2]||r[0])+'</span>'
+          +'<span class="dtrack"><span class="dfill'+(red?" red":"")+'" style="width:'+(100*r[1]/max)+'%"></span></span>'
+          +'<span class="dv">'+r[1]+'</span></button>';
+      });
+    }
+    var buckets=[["slip90","",""],["slip","",""],["soon","",""],["later","",""]];
+    var c={slip90:0,slip:0,soon:0,later:0};
+    US.forEach(function(r){
+      if(r.slipped){ if(-r.days_to_sol>90)c.slip90++; else c.slip++; }
+      else if(r.days_to_sol!=null&&r.days_to_sol<=90)c.soon++; else c.later++;
+    });
+    block("예상 공고일 위치",[
+      ["slip90",c.slip90,"90일 넘게 경과"],["slip",c.slip,"경과 (90일 이내)"],
+      ["soon",c.soon,"D-0 ~ 90"],["later",c.later,"D-90 이후·미상"]],
+      "bucket",{slip90:1,slip:1});
+    block("기관별", st.orgs.slice(0,6).map(function(o){return [o[0],o[1],o[0]];}), "org", null);
+    block("비히클별", st.vehs.slice(0,5).map(function(v){
+      return [v[0],v[1],v[0].length>22?v[0].slice(0,21)+"…":v[0]];}), "veh", null);
+    $("dist").innerHTML=h;
+    $("dist").querySelectorAll(".drow").forEach(function(el){
+      el.addEventListener("click",function(){
+        clearFilters();
+        var k=el.dataset.k,v=el.dataset.v;
+        if(k==="bucket") F.bucket=v;
+        if(k==="org"){ F.org=v; $("fOrg").value=v; }
+        if(k==="veh") F.veh=v;
+        chip(); render(); $("tableTop").scrollIntoView({behavior:"smooth"});
+      });
+    });
+  }
+
+  /* ── 주시 목록 ── */
+  function watchlist(){
+    var top=US.slice().sort(function(a,b){return b.heat-a.heat;}).slice(0,5);
+    $("watch").innerHTML=top.map(function(r,i){
+      var why=[];
+      if(r.republished) why.push("재게시 "+r.previous_published_date+" → "+r.published_date);
+      if(r.slipped) why.push("<b>공고예정 "+(-r.days_to_sol)+"일 경과</b>");
+      else if(r.days_to_sol!=null&&r.days_to_sol<=90) why.push("공고 D-"+r.days_to_sol);
+      if(r.value) why.push(esc(r.value));
+      if(r.lane) why.push(esc(r.lane));
+      return '<div class="witem" tabindex="0" data-o="'+esc(r.entity_id)+'">'
+        +'<div class="wrank">'+(i+1)+'</div><div>'
+        +'<div class="wt">'+esc(r.title)+'</div>'
+        +'<div class="wm">'+esc(r.org||"")+' · 현 수행업체 '+esc(r.incumbent||"미상")
+        +'<br>'+why.join('<span class="sep">|</span>')+'</div>'
+        +'</div></div>';
+    }).join("");
+    $("watch").querySelectorAll(".witem").forEach(function(el){
+      function go(){ clearFilters(); OPEN=el.dataset.o; render(); scrollToRow(el.dataset.o); }
+      el.addEventListener("click",go);
+      el.addEventListener("keydown",function(e){if(e.key==="Enter")go();});
+    });
+  }
+
+  function scrollToRow(id){
+    var tr=document.querySelector('tr.row[data-id="'+CSS.escape(id)+'"]');
+    if(tr) tr.scrollIntoView({behavior:"smooth",block:"center"});
+  }
+
+  function renderSum(){
+    var st=stats();
+    $("sumline").innerHTML=
+      '<div class="sum"><div class="v warn">'+st.slip.length+'<span style="font-size:15px;color:var(--ink-2);font-weight:400"> / '+st.n+'건</span></div><div class="k">예상 공고일 경과</div></div>'
+     +'<div class="sum"><div class="v">'+st.med+'일</div><div class="k">지연 중앙값</div></div>'
+     +'<div class="sum"><div class="v">'+st.rep14.length+'</div><div class="k">최근 14일 재게시</div></div>'
+     +'<div class="sum"><div class="v">'+st.soon.length+'</div><div class="k">90일 내 공고 예정</div></div>'
+     +'<div class="sum"><div class="v">'+st.bigLate.length+'<span style="font-size:15px;color:var(--ink-2);font-weight:400"> / '+st.big.length+'</span></div><div class="k">$50M+ 중 지연</div></div>';
+  }
+
+  /* ── 필터/칩 ── */
+  function clearFilters(){
+    F={state:"all",org:"all",val:"all",q:"",veh:null,bucket:null};
+    $("fState").value="all"; $("fOrg").value="all"; $("fVal").value="all"; $("q").value="";
+    chip();
+  }
+  function setChip(state){ clearFilters(); F.state=state; $("fState").value=state==="repub"?"repub":state;
+    render(); $("tableTop").scrollIntoView({behavior:"smooth"}); }
+  function chip(){
+    var host=$("chipHost"); host.innerHTML="";
+    var lab=F.bucket==="slip90"?"경과 90일+":F.bucket==="slip"?"경과 ≤90일":F.bucket==="soon"?"D-0~90":F.bucket==="later"?"D-90 이후":null;
+    if(F.veh) lab=(lab?lab+" · ":"")+F.veh;
+    if(!lab) return;
+    var c=document.createElement("span"); c.className="fchip";
+    c.innerHTML=esc(lab)+' <button aria-label="필터 해제">✕</button>';
+    c.querySelector("button").onclick=function(){F.bucket=null;F.veh=null;chip();render();};
+    host.appendChild(c);
+  }
+
+  function buildOrg(){
+    var seen={};
+    US.forEach(function(r){var o=(r.org||"").split("/")[0];if(o)seen[o]=1;});
+    var sel=$("fOrg");
+    Object.keys(seen).sort().forEach(function(o){
+      var op=document.createElement("option");op.value=o;op.textContent=o;sel.appendChild(op);
+    });
+  }
+  function valBand(v){v=v||"";
+    if(/(\$50M|100M)/.test(v))return"big";
+    if(/(\$5M|\$10M|\$20M)/.test(v))return"mid";return"small";}
+  function pass(r){
+    if(F.state==="slip"&&!r.slipped)return false;
+    if(F.state==="repub"&&!(r.republished&&r.published_days_ago!=null&&r.published_days_ago<=45))return false;
+    if(F.state==="soon"&&!(r.days_to_sol!=null&&r.days_to_sol>=0&&r.days_to_sol<=90))return false;
+    if(F.org!=="all"&&(r.org||"").split("/")[0]!==F.org)return false;
+    if(F.val!=="all"&&valBand(r.value)!==F.val)return false;
+    if(F.veh&&(r.vehicle||"기타")!==F.veh)return false;
+    if(F.bucket){
+      var b = r.slipped ? (-r.days_to_sol>90?"slip90":"slip")
+            : (r.days_to_sol!=null&&r.days_to_sol<=90?"soon":"later");
+      if(b!==F.bucket)return false;
+    }
+    if(F.q){var h=((r.title||"")+" "+(r.incumbent||"")+" "+(r.contract_number||"")+" "+(r.org||"")).toLowerCase();
+      if(h.indexOf(F.q)<0)return false;}
+    return true;
+  }
+  function keyOf(r){
+    if(SORT==="heat")return r.heat||0;
+    if(SORT==="title")return(r.title||"").toLowerCase();
+    if(SORT==="incumbent")return(r.incumbent||"").toLowerCase();
+    if(SORT==="value")return r.value||"";
+    if(SORT==="sol")return r.key_date||"9999";
+    if(SORT==="pub")return r.published_date||"";
+    return 0;
+  }
+  function flags(r){
+    var h="";
+    if(r.slipped)h+='<span class="flag late">'+(-r.days_to_sol)+'일 경과</span>';
+    else if(r.days_to_sol!=null&&r.days_to_sol<=90)h+='<span class="flag soon">D-'+r.days_to_sol+'</span>';
+    if(r.republished)h+='<span class="flag repub">재게시</span>';
+    return h;
+  }
+
+  function render(){
+    var rows=US.filter(pass);
+    rows.sort(function(a,b){var x=keyOf(a),y=keyOf(b);
+      return (x<y?-1:x>y?1:0)*(DESC?-1:1);});
+    $("cnt").textContent=rows.length+"건 표시 / 전체 "+US.length+"건";
+    var tb=$("tbody"); tb.innerHTML="";
+    rows.forEach(function(r){
+      var tr=document.createElement("tr");
+      tr.className="row"; tr.tabIndex=0; tr.dataset.id=r.entity_id;
+      tr.innerHTML='<td class="n"><strong>'+r.heat+'</strong></td>'
+        +'<td><span class="t-title">'+esc(r.title)+'</span>'
+        +'<div class="t-org">'+esc(r.org||"")+' · '+esc(r.entity_id)+'</div>'
+        +'<div style="margin-top:4px">'+flags(r)+'</div></td>'
+        +'<td>'+esc(r.incumbent||"—")+'</td>'
+        +'<td class="n">'+esc(r.value||"—")+'</td>'
+        +'<td class="n">'+esc(r.key_date||"—")+'</td>'
+        +'<td class="n">'+esc(r.published_date||"—")+'</td>';
+      tb.appendChild(tr);
+      if(OPEN===r.entity_id){
+        var dt=document.createElement("tr"); dt.className="detail";
+        dt.innerHTML='<td colspan="6">'+detail(r)+'</td>';
+        tb.appendChild(dt); tr.classList.add("open");
+      }
+    });
+    if(!rows.length)tb.innerHTML='<tr><td colspan="6" style="padding:24px;color:var(--ink-2)">조건에 맞는 레코드가 없습니다.</td></tr>';
+  }
+
+  /* 상세 안 일정 타임라인 */
+  function timeline(r){
+    var pts=[];
+    if(r.previous_published_date)pts.push({d:pd(r.previous_published_date),lab:"직전 게시",cls:""});
+    if(r.published_date)pts.push({d:pd(r.published_date),lab:"재게시",cls:""});
+    if(r.key_date)pts.push({d:pd(r.key_date),lab:"공고 예정",cls:r.slipped?"red":""});
+    pts.push({d:TODAY,lab:"오늘",cls:"today"});
+    pts=pts.filter(function(p){return p.d;});
+    if(pts.length<2)return"";
+    var lo=Math.min.apply(null,pts.map(function(p){return+p.d;}));
+    var hi=Math.max.apply(null,pts.map(function(p){return+p.d;}));
+    var span=hi-lo||1;
+    function x(d){return 3+94*((+d-lo)/span);}
+    var seg="";
+    if(r.slipped&&r.key_date){
+      var a=x(pd(r.key_date)),b2=x(TODAY);
+      seg='<span class="tl-seg" style="left:'+Math.min(a,b2)+'%;width:'+Math.abs(b2-a)+'%;background:var(--red-bg)"></span>';
+    }
+    var used=[];
+    var dots=pts.map(function(p,i){
+      var px=x(p.d);
+      var below=used.some(function(u){return Math.abs(u-px)<14;});
+      used.push(px);
+      var ds=(p.d.getMonth()+1)+"/"+p.d.getDate();
+      return '<span class="tl-dot '+p.cls+'" style="left:'+px+'%"></span>'
+        +'<span class="tl-lab'+(below?" below":"")+'" style="left:'+px+'%"><b>'+p.lab+'</b> '+ds+'</span>';
+    }).join("");
+    return '<p class="d-h">일정</p><div class="tl"><div class="tl-bar">'+seg+dots+'</div></div>';
+  }
+
+  function detail(r){
+    var trg=r.triggers.length
+      ?r.triggers.map(function(t){return '<div class="d-trg">'+esc(t)+'</div>';}).join("")
+      :'<div style="font-size:13px;color:var(--ink-2)">특이 신호 없음 — 정기 추적 대상</div>';
+    var kv=[["현 계약번호",r.contract_number],["비히클",r.vehicle],["NAICS",r.industry],
+            ["구분",r.lane],["이행 종료",r.end_date],["직전 게시",r.previous_published_date],
+            ["담당 POC",r.poc_name],["POC 이메일",r.poc_email]]
+      .filter(function(x){return x[1];})
+      .map(function(x){return "<b>"+esc(x[0])+"</b> "+esc(x[1]);}).join("<br>");
+    return timeline(r)
+      +'<div class="d-grid"><div>'
+      +'<p class="d-h">변화 신호</p>'+trg
+      +'<p class="d-h" style="margin-top:14px">권장 조치</p>'
+      +'<ol class="d-act">'+r.actions.map(function(a){return"<li>"+esc(a)+"</li>";}).join("")+'</ol>'
+      +'</div><div>'
+      +'<p class="d-h">레코드 상세</p><div class="d-kv">'+kv+'</div>'
+      +(r.url?'<p style="margin-top:12px;font-size:13px"><a href="'+esc(r.url)+'" target="_blank" rel="noopener">APFS 원본 레코드 보기</a></p>':"")
+      +'</div></div>';
+  }
+
+  $("tbody").addEventListener("click",function(e){
+    var tr=e.target.closest("tr.row");if(!tr)return;
+    OPEN=OPEN===tr.dataset.id?null:tr.dataset.id;render();
+  });
+  $("tbody").addEventListener("keydown",function(e){
+    if(e.key!=="Enter")return;
+    var tr=e.target.closest("tr.row");if(!tr)return;
+    OPEN=OPEN===tr.dataset.id?null:tr.dataset.id;render();
+  });
+  document.querySelectorAll("thead th").forEach(function(th){
+    th.addEventListener("click",function(){
+      var s2=th.dataset.s;if(!s2)return;
+      if(SORT===s2)DESC=!DESC;else{SORT=s2;DESC=(s2==="heat");}
+      document.querySelectorAll("thead .arr").forEach(function(a){a.remove();});
+      th.insertAdjacentHTML("beforeend",' <span class="arr">'+(DESC?"▼":"▲")+"</span>");
+      render();
+    });
+  });
+  $("fState").onchange=function(){F.state=this.value;render();};
+  $("fOrg").onchange=function(){F.org=this.value;render();};
+  $("fVal").onchange=function(){F.val=this.value;render();};
+  $("q").oninput=function(){F.q=this.value.trim().toLowerCase();render();};
+
+  /* ── KR ── */
+  function loadKR(){
+    fetch("/api/kr").then(function(r){return r.json();}).then(function(d){
+      if(!d.has_db||(!d.bids.length&&!d.renewals.length)){
+        $("krBody").innerHTML='<div class="notice">나라장터 수집 데이터가 아직 없습니다. '
+          +'<code>KR_MENU.bat</code>에서 <strong>1 BIDS</strong>, <strong>2 CONTRACTS</strong>를 실행한 뒤 이 탭을 다시 여십시오.</div>';
+        return;
+      }
+      var h="";
+      var chg=d.bids.filter(function(b){return b.status&&(b.status.indexOf("정정")>=0||b.status.indexOf("재공고")>=0);});
+      var live=d.bids.filter(function(b){return b.d_close==null||b.d_close>=0;});
+      var urgent=d.renewals.filter(function(r){return r.d_day<=100;});
+      h+='<div class="brief"><div class="brief-hd"><h2>오늘의 브리핑</h2><span class="d">'+d.as_of+' 기준 자동 생성</span></div>'
+        +'<p class="brief-lead">추적 중인 계약 가운데 <span class="hl">'+d.renewals.length+'건의 계약이 8개월 내 종료</span>됩니다'
+        +(urgent.length?' — 그중 <b>'+urgent.length+'건은 100일 이내</b>로, 재발주 사전 준비가 통상 시작되는 구간입니다':'')
+        +'. 진행 중 공고는 '+live.length+'건'
+        +(chg.length?', 이 중 <span class="hl2">'+chg.length+'건이 정정·재공고</span> 상태입니다':'')+'.</p></div>';
+      if(d.renewals.length){
+        h+='<p class="secttl">계약 종료 임박 — 재발주 예상 '+d.renewals.length+'건</p>'
+          +'<div class="tblwrap" style="border-top:1px solid var(--border)"><table><thead><tr><th>D-일</th><th>계약명 / 발주기관</th><th>현 수행업체</th><th style="text-align:right">직전 계약금액</th><th>종료일</th></tr></thead><tbody>'
+          +d.renewals.map(function(r){
+            var e=r.end||"";e=e.length===8?e.slice(0,4)+"-"+e.slice(4,6)+"-"+e.slice(6):e;
+            return "<tr><td class='n'><strong style='color:var(--green)'>D-"+r.d_day+"</strong></td>"
+              +"<td><span class='t-title'>"+esc(r.title)+"</span><div class='t-org'>"+esc(r.org||"")+"</div></td>"
+              +"<td>"+esc(r.supplier||"—")+"</td>"
+              +"<td class='n'>"+(r.amount?Number(r.amount).toLocaleString()+"원":"—")+"</td>"
+              +"<td class='n'>"+e+"</td></tr>";
+          }).join("")+"</tbody></table></div>";
+      }
+      if(live.length){
+        h+='<p class="secttl">진행 중 공고 '+live.length+'건</p>'
+          +'<div class="tblwrap" style="border-top:1px solid var(--border)"><table><thead><tr><th>마감</th><th>공고명 / 수요기관</th><th style="text-align:right">배정예산</th><th>지역제한</th><th>상태</th></tr></thead><tbody>'
+          +live.slice(0,80).map(function(b){
+            return "<tr><td class='n'>"+(b.d_close!=null?"D-"+b.d_close:"—")+"</td>"
+              +"<td><span class='t-title'>"+esc(b.title)+"</span><div class='t-org'>"+esc(b.org||"")+"</div></td>"
+              +"<td class='n'>"+(b.value?Number(b.value).toLocaleString()+"원":"—")+"</td>"
+              +"<td>"+esc(b.region||"없음")+"</td>"
+              +"<td>"+(b.status&&b.status.indexOf("정정")>=0?'<span class="flag repub">'+esc(b.status)+"</span>":esc(b.status||"—"))+"</td></tr>";
+          }).join("")+"</tbody></table></div>";
+      }
+      $("krBody").innerHTML=h;
+    });
+  }
+
+  $("tabUS").onclick=function(){swap(true);};
+  $("tabKR").onclick=function(){swap(false);};
+  function swap(us){
+    $("tabUS").classList.toggle("on",us);$("tabKR").classList.toggle("on",!us);
+    $("viewUS").hidden=!us;$("viewKR").hidden=us;
+    if(!us)loadKR();
+  }
+
+  loadUS(false);
+})();
+</script>
+</body>
+</html>

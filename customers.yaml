@@ -1,0 +1,19 @@
+# 고객 프로필 — 가입 시 딱 한 번만 받는 정보
+# 금액 단위: 원
+
+- id: demo-cctv-01
+  company: 데모보안시스템
+  email: demo@example.com
+  plan: PRO
+  industry: cctv
+  regions: [서울, 경기, 인천]
+  licenses: [정보통신공사업, 경비업]
+  keywords_include: [지능형선별관제, 스마트폴]
+  keywords_exclude: [철거, 폐기, 임대, 리스]
+  budget_min: 30000000        # 이하 자동 탈락
+  budget_max: 3000000000
+  sweet_min: 50000000         # 주력 사업규모 (가점)
+  sweet_max: 800000000
+  min_score: 75               # 이 점수 미만은 발송 안 함
+  max_items: 3                # 하루 최대 발송 건수
+  renewal_radar: true         # 계약종료 임박 레이더 포함 (PRO 이상)

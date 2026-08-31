@@ -1,0 +1,368 @@
+<title>DHS 재입찰 지연 지도</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  color-scheme: light;
+  --ground:#f2f3f5; --surface:#fcfcfb; --surface-2:#e9ebef;
+  --ink:#0b0d10; --ink-2:#4b5160; --ink-3:#787f8e;
+  --line:#dcdfe5; --line-2:#e8eaee;
+  --series-1:#2a78d6;
+  --critical:#d03b3b;
+  --grid:#e4e7ec;
+  --shadow:0 1px 2px rgba(11,13,16,.05), 0 14px 34px -24px rgba(11,13,16,.4);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#0c0e11; --surface:#1a1a19; --surface-2:#20232a;
+    --ink:#eef0f4; --ink-2:#adb4c1; --ink-3:#7d8492;
+    --line:#2a2e37; --line-2:#22262d;
+    --series-1:#3987e5;
+    --critical:#d03b3b;
+    --grid:#2b2f38;
+    --shadow:0 1px 2px rgba(0,0,0,.5), 0 14px 34px -24px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#0c0e11; --surface:#1a1a19; --surface-2:#20232a;
+  --ink:#eef0f4; --ink-2:#adb4c1; --ink-3:#7d8492;
+  --line:#2a2e37; --line-2:#22262d;
+  --series-1:#3987e5;
+  --critical:#d03b3b;
+  --grid:#2b2f38;
+  --shadow:0 1px 2px rgba(0,0,0,.5), 0 14px 34px -24px rgba(0,0,0,.9);
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:"IBM Plex Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;
+  font-weight:400;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:840px;margin:0 auto;padding:0 22px}
+section{padding:44px 0;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:none}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 12px}
+h1{font-family:Archivo,"IBM Plex Sans KR",sans-serif;font-weight:800;
+  font-size:clamp(28px,5.4vw,44px);line-height:1.18;letter-spacing:-.025em;
+  margin:0 0 16px;text-wrap:balance}
+h2{font-size:21px;font-weight:700;letter-spacing:-.015em;margin:0 0 6px;text-wrap:balance}
+h3{font-size:15px;font-weight:600;margin:26px 0 8px}
+.sub{color:var(--ink-3);font-size:13.5px;margin:0 0 22px;font-weight:300}
+p{margin:0 0 14px;color:var(--ink-2)}
+strong{color:var(--ink);font-weight:600}
+.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+
+/* hero */
+.hero{padding:52px 0 40px}
+.hero .lede{font-size:16px;color:var(--ink-2);max-width:58ch;font-weight:300}
+.hero-stat{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin:26px 0 6px}
+.hero-stat .big{font-family:Archivo,sans-serif;font-weight:800;font-size:clamp(58px,13vw,104px);
+  line-height:.9;letter-spacing:-.04em;color:var(--critical)}
+.hero-stat .cap{font-size:14.5px;color:var(--ink-2);max-width:24ch;line-height:1.5}
+.hero-stat .cap b{display:block;color:var(--ink);font-weight:600;font-size:16px}
+
+/* stat row */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:6px 0 0}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:15px 16px}
+.tile .v{font-family:Archivo,sans-serif;font-weight:700;font-size:27px;letter-spacing:-.02em;
+  line-height:1.1;display:block}
+.tile .k{font-size:12px;color:var(--ink-3);margin-top:5px;display:block;line-height:1.45}
+
+/* bar chart */
+.chart{background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:20px 20px 14px;box-shadow:var(--shadow);margin:16px 0 0}
+.chart h4{margin:0 0 2px;font-size:14.5px;font-weight:600}
+.chart .note{font-size:12px;color:var(--ink-3);margin:0 0 16px}
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar-row{display:grid;grid-template-columns:132px 1fr 54px;gap:11px;align-items:center}
+.bar-lab{font-size:12.5px;color:var(--ink-2);text-align:right;line-height:1.3}
+.bar-track{position:relative;height:19px;background:var(--grid);border-radius:4px}
+.bar-fill{position:absolute;inset:0 auto 0 0;background:var(--series-1);
+  border-radius:0 4px 4px 0;cursor:default;transition:filter .12s}
+.bar-fill.crit{background:var(--critical)}
+.bar-fill:hover{filter:brightness(1.12)}
+.bar-val{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:12.5px;color:var(--ink);font-weight:500}
+.tbl-toggle{background:none;border:none;color:var(--ink-3);font-family:inherit;
+  font-size:11.5px;cursor:pointer;padding:8px 0 0;text-decoration:underline;text-underline-offset:3px}
+.tbl-toggle:focus-visible{outline:2px solid var(--series-1);outline-offset:2px;border-radius:3px}
+
+/* tooltip */
+#tip{position:fixed;pointer-events:none;z-index:50;background:var(--ink);color:var(--ground);
+  font-size:12px;padding:6px 9px;border-radius:6px;opacity:0;transition:opacity .1s;
+  font-family:"IBM Plex Mono",monospace;white-space:nowrap}
+#tip.on{opacity:1}
+
+/* tables */
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface);margin:14px 0 0}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:560px}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--line-2);vertical-align:top}
+thead th{background:var(--surface-2);font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+tbody tr:last-child td{border-bottom:none}
+td.n{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+td.late{color:var(--critical);font-weight:600}
+
+/* event log */
+.log{display:flex;flex-direction:column;gap:0}
+.ev{display:grid;grid-template-columns:96px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--line-2)}
+.ev:last-child{border-bottom:none}
+.ev-d{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-3);padding-top:2px;line-height:1.5}
+.ev-d b{display:block;color:var(--series-1);font-size:12.5px;font-weight:600}
+.ev-t{font-size:15px;font-weight:600;margin:0 0 4px;line-height:1.4}
+.ev-m{font-size:12.5px;color:var(--ink-2);margin:1px 0}
+.ev-m b{color:var(--ink);font-weight:600}
+.chip{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+  font-weight:600;padding:2px 7px;border-radius:4px;margin-right:5px;
+  border:1px solid var(--critical);color:var(--critical)}
+.chip.b{border-color:var(--series-1);color:var(--series-1)}
+
+.callout{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--series-1);
+  border-radius:0 10px 10px 0;padding:16px 18px;margin:20px 0}
+.callout p:last-child{margin-bottom:0}
+.callout .h{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--series-1);margin:0 0 8px;font-weight:600}
+ul.plain{margin:0 0 14px;padding-left:19px}
+ul.plain li{margin:6px 0;color:var(--ink-2);font-size:14.5px}
+footer{padding:26px 0 46px;font-size:12px;color:var(--ink-3);line-height:1.8}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:560px){
+  .bar-row{grid-template-columns:104px 1fr 46px;gap:8px}
+  .ev{grid-template-columns:1fr;gap:6px}
+}
+</style>
+
+<div id="tip" role="status" aria-live="polite"></div>
+
+<div class="hero">
+  <div class="wrap">
+    <p class="eyebrow">DHS APFS · 2026-08-30 실측 · IT/사이버 Follow-on 85건</p>
+    <h1>DHS는 재입찰 일정을<br>거의 다 놓치고 있습니다</h1>
+    <div class="hero-stat">
+      <span class="big">71%</span>
+      <span class="cap"><b>85건 중 60건</b>예상 공고일이 이미 지났는데 아직 공고가 안 났습니다</span>
+    </div>
+    <p class="lede">DHS 조달 예보(APFS)에서 IT·사이버 후속계약 85건을 뽑아 오늘 날짜와 대조했습니다.
+      절반이 아니라 <strong>10건 중 7건</strong>이 예정일을 넘겼습니다. 중앙값 27일, 최대 425일.</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>이게 왜 돈이 되는 발견인가</h2>
+    <p class="sub">"만료 계약 목록"을 파는 서비스가 설명하지 못하는 지점</p>
+    <p>예정일이 지났는데 공고가 안 났다는 건 두 가지 중 하나입니다. 조달이 막혀 있거나,
+      <strong>아직 규격이 확정되지 않았거나.</strong> 어느 쪽이든 <strong>영업 창이 아직 열려 있다</strong>는 뜻입니다.</p>
+    <p>기존 도구는 "이 계약은 2031년에 끝납니다"를 알려줍니다. 그건 누구나 압니다.
+      아무도 <strong>"이 건은 6개월째 밀리고 있고, 지난주에 예보가 다시 올라왔습니다"</strong>를 말해주지 않습니다.
+      그게 담당자를 지금 만나야 하는 이유고, 이 데이터에는 그게 들어 있습니다.</p>
+    <div class="tiles">
+      <div class="tile"><span class="v num">85</span><span class="k">IT/사이버 후속계약<br>(전체 예보 844건 중)</span></div>
+      <div class="tile"><span class="v num" style="color:var(--critical)">60</span><span class="k">예상 공고일 경과</span></div>
+      <div class="tile"><span class="v num">32</span><span class="k">예보 재게시 이력 보유<br>= 실제 변경 발생</span></div>
+      <div class="tile"><span class="v num">100%</span><span class="k">기존 수행업체·계약번호<br>확보율</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>지연 지도</h2>
+    <p class="sub">예상 공고일이 오늘(2026-08-30) 기준 어디에 있는가</p>
+
+    <div class="chart">
+      <h4>예상 공고일 분포</h4>
+      <p class="note">단위: 건. 막대에 마우스를 올리면 비율이 보입니다.</p>
+      <div class="bars" id="c1"></div>
+      <button class="tbl-toggle" data-t="t1">표로 보기</button>
+      <div class="scroll" id="t1" hidden></div>
+    </div>
+
+    <div class="callout">
+      <p class="h">가장 오래 밀린 건</p>
+      <p><strong>TSA Training Management System (ACADIS)</strong> — 예상 공고일 2025-07-01,
+        오늘 기준 <strong>425일 경과</strong>. 수행업체 Envisage/Vector Solutions, $2M–$5M.
+        예보에는 여전히 Follow-on으로 살아 있습니다.</p>
+    </div>
+
+    <h3>금액이 큰데 밀린 건 — $50M 이상 12건 중 8건</h3>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>사업</th><th>기관</th><th>수행업체</th><th>금액</th><th class="n">지연</th></tr></thead>
+        <tbody id="tbig"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>8월 실제 변화 로그</h2>
+    <p class="sub">APFS가 예보를 다시 게시한 날 = 무언가 바뀐 날. 8월에만 18일간 34건.</p>
+    <p>아래는 <strong>실제 레코드의 게시일·직전 게시일 필드</strong>입니다. 추정이 아닙니다.
+      이 두 날짜가 다르다는 건 그 사이에 기관이 예보를 손봤다는 뜻입니다.</p>
+
+    <h3>2026-08-26 — 5건 재게시</h3>
+    <div class="log" id="log826"></div>
+
+    <h3>2026-08-28 — 1건 신규 진입</h3>
+    <div class="log" id="log828"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>어디에 몰려 있는가</h2>
+    <p class="sub">타깃을 좁힐 때 쓰는 두 축</p>
+    <div class="chart">
+      <h4>계약 비히클</h4>
+      <p class="note">단위: 건. 상위 5종 + 기타.</p>
+      <div class="bars" id="c2"></div>
+      <button class="tbl-toggle" data-t="t2">표로 보기</button>
+      <div class="scroll" id="t2" hidden></div>
+    </div>
+    <div class="chart">
+      <h4>발주 기관</h4>
+      <p class="note">단위: 건.</p>
+      <div class="bars" id="c3"></div>
+      <button class="tbl-toggle" data-t="t3">표로 보기</button>
+      <div class="scroll" id="t3" hidden></div>
+    </div>
+    <div class="callout">
+      <p class="h">여기서 나오는 판매 전략</p>
+      <p><strong>NASA SEWP V 하나가 85건 중 28건(33%)</strong>입니다. 그리고
+        <strong>USCIS 한 기관이 27건(32%)</strong>입니다.
+        첫 고객은 "DHS 전체를 파는 회사"가 아니라 <strong>SEWP V를 보유하고 USCIS에 납품해 본 회사</strong>입니다.
+        그 교집합이면 오늘 이 85건 중 상당수가 자기 회사 얘기입니다.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>그래서 무엇을 파는가</h2>
+    <ul class="plain">
+      <li>공고 목록이 아니라 <strong>"이번 주에 움직인 것"</strong>만 보냅니다. 8월 기준 하루 평균 2건입니다.</li>
+      <li>각 건에 <strong>왜 지금인지</strong>를 붙입니다 — 며칠 밀렸는지, 언제 재게시됐는지, 현 수행업체가 누구인지.</li>
+      <li>모든 숫자는 원문 필드에서 규칙으로 계산합니다. <strong>언어모델이 만든 수치는 하나도 없습니다.</strong></li>
+      <li>바뀐 게 없는 날은 <strong>아무것도 보내지 않습니다.</strong></li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><strong>출처</strong> — DHS Acquisition Planning Forecast System 공개 API
+      (<span class="num">apfs-cloud.dhs.gov/api/forecast/</span>), 2026-08-30 수집 전체 844건.
+      필터: NAICS 541511·541512·541513·541519·518210 → 180건 → competitive = "Follow-on to Existing Contract" → 85건.<br>
+      지연 일수는 레코드의 estimated_solicitation_release_date와 2026-08-30의 차이입니다.
+      재게시 이력은 published_date와 previous_published_date 필드 그대로입니다.<br>
+      예보는 계획이며 확정 조달 일정이 아닙니다. 실제 공고 여부는 SAM.gov에서 확인해야 합니다.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var TIP = document.getElementById("tip");
+  function tipOn(e, t){ TIP.textContent = t; TIP.classList.add("on");
+    TIP.style.left = Math.min(e.clientX + 12, innerWidth - TIP.offsetWidth - 8) + "px";
+    TIP.style.top = (e.clientY - 34) + "px"; }
+  function tipOff(){ TIP.classList.remove("on"); }
+
+  function bars(hostId, tblId, rows, unit, critLabel){
+    var host = document.getElementById(hostId);
+    var max = Math.max.apply(null, rows.map(function(r){return r[1];})) || 1;
+    var total = rows.reduce(function(a,r){return a + r[1];}, 0);
+    rows.forEach(function(r){
+      var row = document.createElement("div"); row.className = "bar-row";
+      var lab = document.createElement("div"); lab.className = "bar-lab"; lab.textContent = r[0];
+      var tr = document.createElement("div"); tr.className = "bar-track";
+      var fl = document.createElement("div"); fl.className = "bar-fill" + (r[0] === critLabel ? " crit" : "");
+      fl.style.width = Math.max(2, 100 * r[1] / max) + "%";
+      var pct = total ? (100 * r[1] / total).toFixed(1) : "0";
+      var msg = r[0] + " · " + r[1] + unit + " · " + pct + "%";
+      fl.addEventListener("mousemove", function(e){ tipOn(e, msg); });
+      fl.addEventListener("mouseleave", tipOff);
+      var v = document.createElement("div"); v.className = "bar-val"; v.textContent = r[1];
+      tr.appendChild(fl); row.appendChild(lab); row.appendChild(tr); row.appendChild(v);
+      host.appendChild(row);
+    });
+    var t = document.getElementById(tblId);
+    var h = "<table><thead><tr><th>구분</th><th class='n'>건수</th><th class='n'>비율</th></tr></thead><tbody>";
+    rows.forEach(function(r){
+      h += "<tr><td>" + r[0] + "</td><td class='n'>" + r[1] + "</td><td class='n'>"
+         + (total ? (100 * r[1] / total).toFixed(1) : "0") + "%</td></tr>";
+    });
+    t.innerHTML = h + "</tbody></table>";
+  }
+
+  bars("c1", "t1", [["이미 경과", 60], ["D-0 ~ 90", 16], ["D-91 ~ 180", 2],
+                    ["D-180 이상", 6], ["일자 미상", 1]], "건", "이미 경과");
+  bars("c2", "t2", [["NASA SEWP V", 28], ["GSA Schedule", 10], ["GWAC", 8],
+                    ["8(a) STARS III", 7], ["IDIQ TO/DO", 6], ["기타", 26]], "건", null);
+  bars("c3", "t3", [["USCIS", 27], ["TSA", 14], ["DHS HQ", 13], ["USCG", 11],
+                    ["CBP", 9], ["ICE", 9], ["기타", 2]], "건", null);
+
+  document.querySelectorAll(".tbl-toggle").forEach(function(b){
+    b.addEventListener("click", function(){
+      var el = document.getElementById(b.dataset.t);
+      el.hidden = !el.hidden;
+      b.textContent = el.hidden ? "표로 보기" : "표 닫기";
+    });
+  });
+
+  var BIG = [
+    ["Cyber Security Operations Support (Recompete)", "CBP/OIT", "Leidos, Inc.", "Over $100M", 182],
+    ["AMOC C4I Systems Maintenance & Enhancement", "CBP/Air and Marine", "CACI, Inc Federal", "$50M–$100M", 158],
+    ["CISA Enterprise Engineering & Operations Support", "DHS HQ/CISA", "Sev1Tech", "Over $100M", 48],
+    ["Information Systems Division Professional Services", "USCG/CG-AIR", "Oasys International LLC", "Over $100M", 48],
+    ["Agile C5ISC Operational & Modernization Pipeline", "USCG/CG-C5I", "Synergy Business Innovations", "$50M–$100M", 13],
+    ["Agile C5ISC Operational & Modernization Pipeline", "USCG/CG-C5I", "Synergy Business Innovations", "$50M–$100M", 13]
+  ];
+  document.getElementById("tbig").innerHTML = BIG.map(function(r){
+    return "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td><td>" + r[2]
+      + "</td><td>" + r[3] + "</td><td class='n late'>" + r[4] + "일</td></tr>";
+  }).join("") + "<tr><td colspan='5' style='color:var(--ink-3);font-size:12px'>외 2건</td></tr>";
+
+  var E826 = [
+    {p:"2026-06-02", t:"Google Workspace Enterprise Plus", org:"DHS HQ/CISA",
+     inc:"DH Technologies Inc.", v:"$500K–$1M", veh:"NASA SEWP V", sol:"2026-09-01", d:2},
+    {p:"2026-03-24", t:"Biometrics at Sea System (BASS) Sustainment", org:"USCG/CG-C5I",
+     inc:"InCadence Strategic Solutions", v:"$10M–$20M", veh:"Definitive Contract", sol:"2026-10-16", d:47},
+    {p:null, t:"Case Matter Management Tracking Service", org:"USCG/CG-SURFACE",
+     inc:"VsolvIT", v:"$2M–$5M", veh:"8(a) STARS III", sol:"2026-08-21", d:-9},
+    {p:null, t:"ShadowDragon Horizon/SocialNet Bundle Licenses", org:"ICE/HSI",
+     inc:"ThunderCat Technology, LLC", v:"$500K–$1M", veh:"NASA SEWP V", sol:"2026-09-02", d:3},
+    {p:null, t:"Thales FY27", org:"USCIS",
+     inc:"TBD", v:"$350K–$500K", veh:"Definitive Contract", sol:"2027-08-02", d:337}
+  ];
+  var E828 = [
+    {p:null, t:"FY27 Oracle Enterprise Software License Maintenance Renewal", org:"USCG/CG-C5I",
+     inc:"FCN Inc.", v:"$10M–$20M", veh:"NASA SEWP V", sol:"2027-04-01", d:216}
+  ];
+  function log(hostId, evs, day){
+    var h = document.getElementById(hostId);
+    evs.forEach(function(e){
+      var wrap = document.createElement("div"); wrap.className = "ev";
+      var left = document.createElement("div"); left.className = "ev-d";
+      left.innerHTML = "<b>" + day + "</b>" + (e.p ? "직전 게시<br>" + e.p : "신규 진입");
+      var right = document.createElement("div");
+      var chips = e.d < 0
+        ? '<span class="chip">공고예정일 ' + (-e.d) + '일 경과</span>'
+        : '<span class="chip b">공고예정 D-' + e.d + '</span>';
+      right.innerHTML =
+        '<div class="ev-t">' + e.t + '</div>' + chips +
+        '<div class="ev-m" style="margin-top:7px">' + e.org + ' · 예상 공고일 ' + e.sol + '</div>' +
+        '<div class="ev-m">현 수행업체 <b>' + e.inc + '</b> · ' + e.v + ' · ' + e.veh + '</div>';
+      wrap.appendChild(left); wrap.appendChild(right); h.appendChild(wrap);
+    });
+  }
+  log("log826", E826, "2026-08-26");
+  log("log828", E828, "2026-08-28");
+})();
+</script>

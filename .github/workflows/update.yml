@@ -1,0 +1,74 @@
+name: daily-update
+
+on:
+  schedule:
+    - cron: "0 21 * * *"     # 매일 21:00 UTC = 06:00 KST
+  workflow_dispatch: {}       # Actions 탭에서 수동 실행 가능
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-update
+  cancel-in-progress: false
+
+env:
+  DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install requests pyyaml
+
+      # 한국 나라장터 수집 (Secret DATA_GO_KR_KEY 등록 시에만 실행)
+      - name: Collect KR (nara-jangteo)
+        if: ${{ env.DATA_GO_KR_KEY != '' }}
+        continue-on-error: true
+        run: |
+          python run_kr.py init
+          python run_kr.py collect --days 7
+          python run_kr.py collect-contracts --days 90
+
+      # 미국 APFS 라이브 수집 + 정적 사이트 빌드
+      - name: Build site
+        run: python build_site.py
+
+      # 변화 엔진: 일일 스냅샷 축적 + diff + 브리프
+      - name: Snapshot & diff
+        continue-on-error: true
+        run: |
+          python run_platform.py --source us snapshot
+          python run_platform.py --source us diff
+          python run_platform.py --source us --lang en --min medium brief
+
+      - name: Commit updated data
+        run: |
+          git config user.name "recompete-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A docs
+          if [ -d out ]; then git add -A out; fi
+          if [ -f data/platform.sqlite3 ]; then git add -f data/platform.sqlite3; fi
+          git diff --cached --quiet && echo "no changes" && exit 0
+          git commit -m "daily update $(date -u +%Y-%m-%d)"
+          git push
+
+      # ── 선택: Firebase Hosting 배포 ─────────────────────────────
+      # Secret 에 FIREBASE_SERVICE_ACCOUNT(서비스계정 JSON)와
+      # FIREBASE_PROJECT_ID 를 넣고 아래 주석을 해제하면
+      # 같은 결과물이 Firebase Hosting 으로도 배포된다.
+      #
+      # - name: Deploy to Firebase Hosting
+      #   uses: FirebaseExtended/action-hosting-deploy@v0
+      #   with:
+      #     repoToken: ${{ secrets.GITHUB_TOKEN }}
+      #     firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      #     projectId: ${{ secrets.FIREBASE_PROJECT_ID }}
+      #     channelId: live

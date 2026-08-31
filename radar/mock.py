@@ -1,0 +1,133 @@
+"""API 키 없이 파이프라인을 검증하기 위한 모의 데이터.
+필드명·날짜형식은 공식 명세(1.2)와 동일하게 맞췄다. 값은 전부 가상이다."""
+from datetime import date, timedelta
+
+
+def _d(n):
+    return (date.today() + timedelta(days=n)).strftime("%Y-%m-%d")
+
+
+MOCK_BIDS = [
+    {"bidNtceNo":"R26BK00000001","bidNtceOrd":"000","ppsNtceYn":"Y",
+     "bidNtceNm":"○○구청 방범용 CCTV 통합관제센터 유지관리 용역",
+     "bidNtceSttusNm":"일반공고","bidNtceDate":_d(-1),"bsnsDivNm":"용역",
+     "cntrctCnclsMthdNm":"협상에의한계약","bidwinrDcsnMthdNm":"협상에의한계약",
+     "ntceInsttNm":"서울특별시 ○○구청","ntceInsttCd":"6110000",
+     "ntceInsttOfclDeptNm":"안전도시과","ntceInsttOfclNm":"김담당",
+     "ntceInsttOfclTel":"02-000-0000","ntceInsttOfclEmailAdrs":"aaa@example.go.kr",
+     "dmndInsttNm":"서울특별시 ○○구청","presnatnOprtnYn":"Y","presnatnOprtnDate":_d(7),
+     "bidPrtcptQlfctRgstClseDate":_d(10),
+     "bidBeginDate":_d(3),"bidClseDate":_d(12),"bidClseTm":"10:00","opengDate":_d(13),
+     "asignBdgtAmt":"182000000","presmptPrce":"165454545",
+     "rgnLmtYn":"Y","prtcptPsblRgnNm":"서울특별시",
+     "indstrytyLmtYn":"Y","bidprcPsblIndstrytyNm":"정보통신공사업",
+     "bidNtceUrl":"https://www.g2b.go.kr/","dataBssDate":_d(0)},
+
+    {"bidNtceNo":"R26BK00000002","bidNtceOrd":"000","ppsNtceYn":"Y",
+     "bidNtceNm":"△△대학교 캠퍼스 영상감시장치 노후교체 구매설치",
+     "bidNtceSttusNm":"긴급공고","bidNtceDate":_d(0),"bsnsDivNm":"물품",
+     "cntrctCnclsMthdNm":"제한경쟁","bidwinrDcsnMthdNm":"적격심사",
+     "ntceInsttNm":"△△대학교","ntceInsttCd":"7010000",
+     "ntceInsttOfclNm":"이담당","ntceInsttOfclTel":"031-000-0000",
+     "dmndInsttNm":"△△대학교","presnatnOprtnYn":"N",
+     "bidPrtcptQlfctRgstClseDate":_d(-1),
+     "bidBeginDate":_d(2),"bidClseDate":_d(9),"bidClseTm":"11:00","opengDate":_d(10),
+     "asignBdgtAmt":"64000000","presmptPrce":"58181818",
+     "rgnLmtYn":"N","prtcptPsblRgnNm":"",
+     "indstrytyLmtYn":"N","bidprcPsblIndstrytyNm":"",
+     "bidNtceUrl":"https://www.g2b.go.kr/","dataBssDate":_d(0)},
+
+    {"bidNtceNo":"R26BK00000003","bidNtceOrd":"000","ppsNtceYn":"Y",
+     "bidNtceNm":"□□시 상수도관 노후관 교체공사",
+     "bidNtceSttusNm":"일반공고","bidNtceDate":_d(0),"bsnsDivNm":"공사",
+     "cntrctCnclsMthdNm":"일반경쟁","ntceInsttNm":"□□시청","dmndInsttNm":"□□시청",
+     "bidClseDate":_d(11),"asignBdgtAmt":"2400000000",
+     "rgnLmtYn":"Y","prtcptPsblRgnNm":"충청북도",
+     "indstrytyLmtYn":"Y","bidprcPsblIndstrytyNm":"상하수도설비공사업",
+     "bidNtceUrl":"https://www.g2b.go.kr/","dataBssDate":_d(0)},
+
+    {"bidNtceNo":"R26BK00000004","bidNtceOrd":"000","ppsNtceYn":"Y",
+     "bidNtceNm":"◎◎공단 주차관제 및 차량번호인식 시스템 구축",
+     "bidNtceSttusNm":"재공고","bidNtceDate":_d(0),"bsnsDivNm":"용역",
+     "cntrctCnclsMthdNm":"제한경쟁","bidwinrDcsnMthdNm":"적격심사",
+     "ntceInsttNm":"경기도 ◎◎공단","dmndInsttNm":"경기도 ◎◎공단",
+     "ntceInsttOfclNm":"박담당","ntceInsttOfclTel":"031-111-1111",
+     "presnatnOprtnYn":"N","bidClseDate":_d(5),"bidClseTm":"10:00","opengDate":_d(6),
+     "asignBdgtAmt":"97000000","presmptPrce":"88181818",
+     "rgnLmtYn":"Y","prtcptPsblRgnNm":"경기도",
+     "indstrytyLmtYn":"N","bidprcPsblIndstrytyNm":"",
+     "bidNtceUrl":"https://www.g2b.go.kr/","dataBssDate":_d(0)},
+
+    {"bidNtceNo":"R26BK00000005","bidNtceOrd":"000","ppsNtceYn":"Y",
+     "bidNtceNm":"◇◇군 CCTV 카메라 철거 및 폐기 용역",
+     "bidNtceSttusNm":"일반공고","bidNtceDate":_d(0),"bsnsDivNm":"용역",
+     "cntrctCnclsMthdNm":"일반경쟁","ntceInsttNm":"◇◇군청","dmndInsttNm":"◇◇군청",
+     "bidClseDate":_d(8),"asignBdgtAmt":"12000000",
+     "rgnLmtYn":"N","indstrytyLmtYn":"N",
+     "bidNtceUrl":"https://www.g2b.go.kr/","dataBssDate":_d(0)},
+]
+
+MOCK_CONTRACTS = [
+    {"cntrctNo":"R25TA00000001","cntrctOrd":"00","cntrctNm":"○○대학교 캠퍼스 CCTV 통합관제 유지보수",
+     "bsnsDivNm":"용역","cntrctCnclsMthdNm":"제한경쟁","lngtrmCtnuDivNm":"단년도계약",
+     "cntrctCnclsDate":"2025-11-01","cntrctPrd":"2025.11.01. ~ " + _d(82).replace("-", ".") + ".",
+     "cntrctAmt":"240000000","cntrctInsttNm":"서울특별시 ○○대학교","dmndInsttNm":"서울특별시 ○○대학교",
+     "cntrctInsttOfclNm":"최담당","cntrctInsttOfclTel":"02-880-0000",
+     "rprsntCorpNm":"ABC정보통신","rprsntCorpCeoNm":"김대표","rprsntCorpBizrno":"123-45-67890",
+     "rprsntCorpAdrs":"서울특별시 관악구","rprsntCorpContactTel":"02-777-0000",
+     "bidNtceNo":"R25BK00000123","dataBssDate":_d(-1)},
+
+    {"cntrctNo":"R25TA00000002","cntrctOrd":"00","cntrctNm":"경기도 ◎◎시 방범 CCTV 관제센터 운영 위탁",
+     "bsnsDivNm":"용역","cntrctCnclsMthdNm":"협상에의한계약","lngtrmCtnuDivNm":"단년도계약",
+     "cntrctCnclsDate":"2025-12-15","cntrctPrd":"2026.01.01. ~ " + _d(120).replace("-", ".") + ".",
+     "cntrctAmt":"410000000","cntrctInsttNm":"경기도 ◎◎시청","dmndInsttNm":"경기도 ◎◎시청",
+     "cntrctInsttOfclNm":"정담당","cntrctInsttOfclTel":"031-000-1234",
+     "rprsntCorpNm":"세이프넷시스템","rprsntCorpCeoNm":"이대표","rprsntCorpBizrno":"234-56-78901",
+     "rprsntCorpAdrs":"경기도 수원시","rprsntCorpContactTel":"031-222-3333",
+     "bidNtceNo":"R25BK00000456","dataBssDate":_d(-1)},
+
+    {"cntrctNo":"R25TA00000003","cntrctOrd":"00","cntrctNm":"◆◆청사 승강기 유지관리",
+     "bsnsDivNm":"용역","cntrctCnclsMthdNm":"일반경쟁","cntrctCnclsDate":"2025-12-01",
+     "cntrctPrd":"2026.01.01. ~ " + _d(95).replace("-", ".") + ".",
+     "cntrctAmt":"88000000","cntrctInsttNm":"○○지방청","dmndInsttNm":"○○지방청",
+     "rprsntCorpNm":"엘리베이터코리아","rprsntCorpContactTel":"02-555-0000",
+     "bidNtceNo":"R25BK00000999","dataBssDate":_d(-1)},
+]
+
+MOCK_SCSBIDS = [
+    {"bidNtceNo":"R25BK00000123","bidNtceOrd":"000",
+     "bidNtceNm":"○○대학교 캠퍼스 CCTV 통합관제 유지보수","bsnsDivNm":"용역",
+     "cntrctCnclsMthdNm":"제한경쟁","bidwinrDcsnMthdNm":"적격심사",
+     "ntceInsttNm":"서울특별시 ○○대학교","dmndInsttNm":"서울특별시 ○○대학교",
+     "opengDate":"2025-10-20","opengRsltDivNm":"개찰완료","opengRank":"1",
+     "presmptPrce":"218181818",
+     "fnlSucsfCorpNm":"ABC정보통신","fnlSucsfCorpCeoNm":"김대표",
+     "fnlSucsfCorpBizrno":"123-45-67890","fnlSucsfCorpAdrs":"서울특별시 관악구",
+     "fnlSucsfCorpContactTel":"02-777-0000",
+     "fnlSucsfAmt":"240000000","fnlSucsfRt":"88.0","fnlSucsfDate":"2025-10-21",
+     "dataBssDate":_d(-1)},
+
+    {"bidNtceNo":"R25BK00000789","bidNtceOrd":"000",
+     "bidNtceNm":"◇◇시 스마트도시안전망 영상감시 카메라 증설","bsnsDivNm":"물품",
+     "cntrctCnclsMthdNm":"제한경쟁","bidwinrDcsnMthdNm":"적격심사",
+     "ntceInsttNm":"경기도 ◇◇시청","dmndInsttNm":"경기도 ◇◇시청",
+     "opengDate":"2026-03-11","opengRsltDivNm":"개찰완료","opengRank":"1",
+     "presmptPrce":"140000000",
+     "fnlSucsfCorpNm":"세이프넷시스템","fnlSucsfCorpCeoNm":"이대표",
+     "fnlSucsfCorpBizrno":"234-56-78901","fnlSucsfCorpAdrs":"경기도 수원시",
+     "fnlSucsfCorpContactTel":"031-222-3333",
+     "fnlSucsfAmt":"151000000","fnlSucsfRt":"89.1","fnlSucsfDate":"2026-03-12",
+     "dataBssDate":_d(-1)},
+
+    {"bidNtceNo":"R25BK00000790","bidNtceOrd":"000",
+     "bidNtceNm":"△△군 방범카메라 유지보수","bsnsDivNm":"용역",
+     "cntrctCnclsMthdNm":"제한경쟁","bidwinrDcsnMthdNm":"적격심사",
+     "ntceInsttNm":"강원특별자치도 △△군청","dmndInsttNm":"강원특별자치도 △△군청",
+     "opengDate":"2026-05-02","opengRsltDivNm":"개찰완료","opengRank":"1",
+     "presmptPrce":"52000000",
+     "fnlSucsfCorpNm":"ABC정보통신","fnlSucsfCorpCeoNm":"김대표",
+     "fnlSucsfCorpBizrno":"123-45-67890","fnlSucsfCorpAdrs":"서울특별시 관악구",
+     "fnlSucsfCorpContactTel":"02-777-0000",
+     "fnlSucsfAmt":"56000000","fnlSucsfRt":"90.2","fnlSucsfDate":"2026-05-03",
+     "dataBssDate":_d(-1)},
+]

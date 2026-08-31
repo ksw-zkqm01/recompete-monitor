@@ -1,0 +1,10 @@
+.env
+.env.backup
+__pycache__/
+*.pyc
+data/radar.sqlite3
+data/web_us.json
+data/simulate.sqlite3
+inspect_result.txt
+diag_result.txt
+node_modules/
