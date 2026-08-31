@@ -577,7 +577,7 @@ tr.detail td{background:var(--bg-3);border-bottom:1px solid var(--border-2);padd
     fetch("data/kr.json?v="+Date.now()).then(function(r){return r.json();}).then(function(d){
       if(!d.has_db||(!d.bids.length&&!d.renewals.length)){
         $("krBody").innerHTML='<div class="notice">나라장터 수집 데이터가 아직 없습니다. '
-          +'<code>KR_MENU.bat</code>에서 <strong>1 BIDS</strong>, <strong>2 CONTRACTS</strong>를 실행한 뒤 이 탭을 다시 여십시오.</div>';
+          +'매일 06:00(KST) 자동 수집이 첫 데이터를 쌓는 중입니다. 다음 자동 갱신 후 다시 확인해 주십시오.</div>';
         return;
       }
       var h="";
