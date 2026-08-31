@@ -1,0 +1,16 @@
+{
+  "name": "D-90 입찰레이더",
+  "short_name": "D-90",
+  "description": "공공 계약 만기 90일 전 재계약 신호와 맞춤 입찰공고를 매일 알려주는 레이더",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#162e51",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

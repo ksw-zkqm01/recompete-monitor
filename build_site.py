@@ -65,6 +65,11 @@ def main():
         "'매일 06:00(KST) 자동 수집이 첫 데이터를 쌓는 중입니다. 다음 자동 갱신 후 다시 확인해 주십시오.</div>'")
     (DOCS / "index.html").write_text(html, encoding="utf-8")
 
+    # 1b) D-90 입찰레이더 앱(설치형 PWA) — d90_src/ 를 docs/d90/ 로 복사
+    d90 = ROOT / "d90_src"
+    if d90.exists():
+        shutil.copytree(d90, DOCS / "d90", dirs_exist_ok=True)
+
     # 2) 데이터
     us = build_us(offline=a.offline)
     (DOCS / "data" / "us.json").write_text(json.dumps(us, ensure_ascii=False), encoding="utf-8")

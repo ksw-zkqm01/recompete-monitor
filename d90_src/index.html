@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>D-90 입찰레이더</title>
+<meta name="description" content="공공 계약 만기 90일 전 재계약 신호와 맞춤 입찰공고를 매일 알려주는 레이더">
+<meta name="theme-color" content="#162e51">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<style>
+:root{
+  --navy:#162e51; --blue:#005ea2; --red:#b50909; --ink:#1b1b1b; --ink2:#565c65;
+  --line:#dfe1e2; --bg:#f9f9f9; --card:#ffffff; --ok:#00695c;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:"Public Sans","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  background:var(--bg);color:var(--ink);font-size:15px;line-height:1.5;
+  padding-bottom:calc(64px + env(safe-area-inset-bottom));}
+.wrap{max-width:560px;margin:0 auto}
+/* header */
+.govbar{background:var(--navy);color:#fff;padding:10px 16px calc(10px)}
+.govbar .brand{font-size:19px;font-weight:800;letter-spacing:.2px}
+.govbar .brand b{color:#ffbe2e;font-weight:800}
+.govbar .sub{font-size:12px;color:#a9aeb6;margin-top:2px}
+.redline{height:4px;background:var(--red)}
+.asof{font-size:12px;color:var(--ink2);padding:8px 16px;border-bottom:1px solid var(--line);background:#fff}
+/* sections */
+.tabpane{display:none;padding:14px 14px 20px}
+.tabpane.on{display:block}
+.secttl{font-size:13px;font-weight:700;color:var(--ink2);text-transform:none;
+  letter-spacing:.3px;margin:16px 2px 8px;border-left:4px solid var(--navy);padding-left:8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:2px;
+  padding:12px 14px;margin-bottom:8px;position:relative}
+.card h3{margin:0 0 4px;font-size:14.5px;line-height:1.4}
+.card h3 a{color:var(--blue);text-decoration:none}
+.card .meta{font-size:12.5px;color:var(--ink2)}
+.card .meta b{color:var(--ink)}
+.row2{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.dbadge{flex:0 0 auto;background:var(--navy);color:#fff;font-weight:800;font-size:13px;
+  padding:4px 8px;border-radius:2px;min-width:52px;text-align:center}
+.dbadge.hot{background:var(--red)}
+.dbadge.soon{background:#8a3b00}
+.chips{margin-top:6px}
+.chip{display:inline-block;font-size:11.5px;border:1px solid var(--line);color:var(--ink2);
+  padding:1px 7px;margin:2px 4px 0 0;border-radius:10px;background:#fff}
+.chip.fit{border-color:var(--ok);color:var(--ok);font-weight:700}
+/* briefing */
+.brief{background:#fff;border:1px solid var(--line);border-top:4px solid var(--navy);
+  padding:14px;margin-bottom:10px}
+.brief p{margin:0 0 10px;font-size:14.5px}
+.brief p:last-child{margin:0}
+.brief .hl{background:#fde2e2;color:var(--red);font-weight:700;padding:0 3px}
+.brief .num{font-weight:800}
+.kpis{display:flex;gap:8px;margin-bottom:10px}
+.kpi{flex:1;background:#fff;border:1px solid var(--line);padding:10px 8px;text-align:center}
+.kpi .v{font-size:22px;font-weight:800;color:var(--navy)}
+.kpi .v.red{color:var(--red)}
+.kpi .k{font-size:11.5px;color:var(--ink2);margin-top:2px}
+/* lock/gate */
+.locked{filter:blur(5px);user-select:none;pointer-events:none}
+.gate{background:var(--navy);color:#fff;padding:16px 14px;margin:10px 0 14px;text-align:center}
+.gate p{margin:0 0 10px;font-size:13.5px;color:#dfe1e2}
+.gate b{color:#fff}
+.gate a.btn{display:inline-block;background:#ffbe2e;color:#1b1b1b;font-weight:800;
+  text-decoration:none;padding:10px 18px;border-radius:2px;font-size:14px}
+/* form */
+.f label{display:block;font-size:13px;font-weight:700;margin:12px 0 4px}
+.f input{width:100%;padding:10px;border:1px solid #71767a;border-radius:2px;font-size:15px}
+.f .hint{font-size:12px;color:var(--ink2);margin-top:3px}
+.f button{margin-top:16px;width:100%;background:var(--blue);color:#fff;border:0;
+  padding:12px;font-size:15px;font-weight:700;border-radius:2px}
+.f button.ghost{background:#fff;color:var(--red);border:1px solid var(--line);margin-top:8px}
+.saved{background:#e7f2e8;border:1px solid #b4d0b9;color:#1a4a1f;padding:10px 12px;
+  font-size:13px;margin-top:12px;display:none}
+/* search bar */
+.sbar{display:flex;gap:6px;margin-bottom:10px}
+.sbar input{flex:1;padding:9px 10px;border:1px solid #71767a;border-radius:2px;font-size:14px}
+.sbar .tgl{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--ink2);
+  font-size:12.5px;padding:0 10px;border-radius:2px}
+.sbar .tgl.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.notice{background:#fff;border-left:4px solid var(--blue);border-top:1px solid var(--line);
+  border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:12px 14px;font-size:13.5px;color:var(--ink2)}
+.foot{padding:18px 16px 8px;font-size:11.5px;color:var(--ink2);line-height:1.6}
+.foot a{color:var(--blue)}
+/* bottom nav */
+nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
+  display:flex;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;background:none;border:0;padding:9px 0 7px;font-size:11.5px;color:var(--ink2);
+  border-top:3px solid transparent}
+nav button .ic{display:block;font-size:17px;font-weight:800;line-height:1.15;font-family:inherit}
+nav button.on{color:var(--navy);border-top-color:var(--red);font-weight:700}
+</style>
+</head>
+<body>
+<div class="govbar"><div class="wrap">
+  <div class="brand">D-90 <b>입찰레이더</b></div>
+  <div class="sub">공공 계약 만기 90일 전, 남들보다 먼저 움직입니다</div>
+</div></div>
+<div class="redline"></div>
+<div class="asof wrap" id="asof">데이터 불러오는 중…</div>
+
+<div class="wrap">
+
+<!-- 홈 -->
+<section class="tabpane on" id="p-home">
+  <div class="kpis">
+    <div class="kpi"><div class="v red" id="kRen">–</div><div class="k">만기 240일 이내 계약</div></div>
+    <div class="kpi"><div class="v" id="kBid">–</div><div class="k">진행 중 공고</div></div>
+    <div class="kpi"><div class="v" id="kWeek">–</div><div class="k">7일 내 마감</div></div>
+  </div>
+  <div class="brief" id="brief"></div>
+  <p class="secttl">지금 주시할 재계약 3건</p>
+  <div id="homeTop"></div>
+  <div class="gate">
+    <p><b>전체 목록 + 매일 아침 알림</b>은 무료 체험 등록 후 이용할 수 있습니다.<br>
+    회사 조건(지역·면허·금액대)에 맞는 건만 골라 보내드립니다.</p>
+    <a class="btn" id="cta1" href="#">무료 체험 신청 (3회 무료)</a>
+  </div>
+</section>
+
+<!-- 재계약 -->
+<section class="tabpane" id="p-ren">
+  <div class="sbar">
+    <input id="qRen" type="search" placeholder="기관·사업명·수행업체 검색">
+    <button class="tgl" id="fitRen">내 조건</button>
+  </div>
+  <div id="renList"></div>
+</section>
+
+<!-- 공고 -->
+<section class="tabpane" id="p-bid">
+  <div class="sbar">
+    <input id="qBid" type="search" placeholder="공고명·기관 검색">
+    <button class="tgl" id="fitBid">내 조건</button>
+  </div>
+  <div id="bidList"></div>
+</section>
+
+<!-- 내 조건 -->
+<section class="tabpane" id="p-my">
+  <div class="notice">한 번 저장하면 재계약·공고 목록에서 <b>내 조건 일치 건</b>이 표시되고,
+  「내 조건」 버튼으로 일치 건만 골라 볼 수 있습니다. 조건은 이 기기에만 저장됩니다.</div>
+  <div class="f">
+    <label for="myKw">관심 키워드 (쉼표로 구분)</label>
+    <input id="myKw" placeholder="예: CCTV, 관제, 영상감시">
+    <label for="myRegion">지역</label>
+    <input id="myRegion" placeholder="예: 서울, 경기">
+    <label for="myMin">최소 사업금액 (억원)</label>
+    <input id="myMin" type="number" inputmode="decimal" placeholder="예: 0.5">
+    <label for="myMax">최대 사업금액 (억원)</label>
+    <input id="myMax" type="number" inputmode="decimal" placeholder="예: 30">
+    <button id="mySave">조건 저장</button>
+    <button id="myClear" class="ghost">조건 지우기</button>
+    <div class="saved" id="mySaved">저장되었습니다. 재계약·공고 탭에서 「내 조건」을 눌러 확인하세요.</div>
+  </div>
+</section>
+
+<div class="foot">
+  출처: 조달청 나라장터 공공데이터개방표준서비스 (공공데이터포털) · 매일 06:00 KST 자동 갱신<br>
+  이 화면의 모든 수치와 문장은 원문 데이터 필드와 사전 정의된 규칙으로 계산·조립됩니다.
+  언어모델이 생성한 수치나 판단은 없습니다. 계약·공고의 확정 내용은 나라장터 원문으로 확인하십시오.<br>
+  <a href="privacy.html">개인정보처리방침</a>
+</div>
+</div>
+
+<nav>
+  <button class="on" data-p="home"><span class="ic">▤</span>홈</button>
+  <button data-p="ren"><span class="ic">D-90</span>재계약</button>
+  <button data-p="bid"><span class="ic">◎</span>공고</button>
+  <button data-p="my"><span class="ic">☰</span>내 조건</button>
+</nav>
+
+<script>
+"use strict";
+var MAIL = "zkqm01@gmail.com";
+var FREE_REN = 3, FREE_BID = 10;
+var D = null, PREF = null;
+
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+function norm(s){ return String(s||"").replace(/\s+/g,"").toLowerCase(); }
+function won(v){
+  if(v==null||isNaN(v)) return null;
+  v = Number(v);
+  if(v>=1e8){ var x=(v/1e8).toFixed(1).replace(/\.0$/,""); return x+"억원"; }
+  if(v>=1e4){ return Math.round(v/1e4).toLocaleString()+"만원"; }
+  return v.toLocaleString()+"원";
+}
+function d8(s){ if(!s||s.length<8) return "—";
+  return s.slice(2,4)+"."+s.slice(4,6)+"."+s.slice(6,8); }
+
+/* ---- 내 조건 ---- */
+function loadPref(){
+  try{ PREF = JSON.parse(localStorage.getItem("d90pref")||"null"); }catch(e){ PREF=null; }
+}
+function fit(title, org, region, amount){
+  // 규칙 기반 일치 판정. 이유 문자열 배열을 돌려준다. 조건 없으면 null.
+  if(!PREF) return null;
+  var why = [], t = norm(title), o = norm(org||"");
+  var kwHit = false;
+  if(PREF.kw && PREF.kw.length){
+    for(var i=0;i<PREF.kw.length;i++){
+      if(PREF.kw[i] && t.indexOf(norm(PREF.kw[i]))>-1){ kwHit=true; why.push("키워드 '"+PREF.kw[i]+"'"); break; }
+    }
+    if(!kwHit) return {ok:false, why:[]};
+  }
+  if(PREF.region){
+    var r = norm(PREF.region);
+    if(norm(region||"").indexOf(r)>-1 || o.indexOf(r)>-1) why.push("지역 일치");
+  }
+  if(amount!=null && !isNaN(amount)){
+    var eok = Number(amount)/1e8;
+    if(PREF.min!=null && eok < PREF.min) return {ok:false, why:[]};
+    if(PREF.max!=null && eok > PREF.max) return {ok:false, why:[]};
+    if(PREF.min!=null || PREF.max!=null) why.push("금액대 일치");
+  }
+  return {ok:true, why:why};
+}
+
+/* ---- 카드 렌더 ---- */
+function renCard(r, locked){
+  var d = r.d_day, cls = d<=30?"hot":(d<=90?"soon":"");
+  var f = fit(r.title, r.org, null, r.amount);
+  var chips = "";
+  if(f && f.ok) chips = '<div class="chips"><span class="chip fit">내 조건 일치'+(f.why.length?" · "+esc(f.why.join(" · ")):"")+'</span></div>';
+  return '<div class="card'+(locked?' locked':'')+'"><div class="row2"><div>'
+    +'<h3>'+(r.url&&!locked?'<a href="'+esc(r.url)+'" target="_blank" rel="noopener">':'')
+    +esc(r.title)+((r.url&&!locked)?'</a>':'')+'</h3>'
+    +'<div class="meta"><b>'+esc(r.org||"—")+'</b>'
+    +(r.supplier?' · 현 수행: '+esc(r.supplier):'')
+    +(r.amount!=null?' · '+won(r.amount):'')
+    +' · 만기 '+d8(r.end)+'</div>'+chips
+    +'</div><div class="dbadge '+cls+'">D-'+d+'</div></div></div>';
+}
+function bidCard(b, locked){
+  var dtxt = b.d_close==null?"—":(b.d_close===0?"오늘":"D-"+b.d_close);
+  var cls = (b.d_close!=null&&b.d_close<=3)?"hot":((b.d_close!=null&&b.d_close<=7)?"soon":"");
+  var f = fit(b.title, b.org, b.region, b.value);
+  var chips = [];
+  if(f && f.ok) chips.push('<span class="chip fit">내 조건 일치'+(f.why.length?" · "+esc(f.why.join(" · ")):"")+'</span>');
+  if(b.region) chips.push('<span class="chip">'+esc(b.region)+'</span>');
+  if(b.status && b.status.indexOf("정정")>-1) chips.push('<span class="chip" style="border-color:var(--red);color:var(--red)">정정공고</span>');
+  return '<div class="card'+(locked?' locked':'')+'"><div class="row2"><div>'
+    +'<h3>'+(b.url&&!locked?'<a href="'+esc(b.url)+'" target="_blank" rel="noopener">':'')
+    +esc(b.title)+((b.url&&!locked)?'</a>':'')+'</h3>'
+    +'<div class="meta"><b>'+esc(b.org||"—")+'</b>'
+    +(b.value!=null?' · 배정예산 '+won(b.value):'')
+    +' · 마감 '+d8(b.close)+'</div>'
+    +(chips.length?'<div class="chips">'+chips.join("")+'</div>':'')
+    +'</div><div class="dbadge '+cls+'">'+dtxt+'</div></div></div>';
+}
+function gate(msg){
+  return '<div class="gate"><p>'+msg+'</p>'
+    +'<a class="btn" href="'+ctaHref()+'">무료 체험 신청 (3회 무료)</a></div>';
+}
+function ctaHref(){
+  var s = encodeURIComponent("[D-90] 무료 체험 신청");
+  var b = encodeURIComponent("아래 항목을 적어 보내주시면, 조건에 맞는 재계약·공고 리포트를 3회 무료로 보내드립니다.\n\n회사명:\n업종:\n지역:\n보유 면허:\n관심 키워드:\n최소~최대 사업금액:\n\n(광고성 정보 수신 및 개인정보 수집·이용에 동의합니다)");
+  return "mailto:"+MAIL+"?subject="+s+"&body="+b;
+}
+
+/* ---- 목록 렌더 ---- */
+function renderRen(){
+  var q = norm($("qRen").value), only = $("fitRen").classList.contains("on");
+  var rows = (D.renewals||[]).slice().sort(function(a,b){return a.d_day-b.d_day;});
+  if(q) rows = rows.filter(function(r){ return norm(r.title+(r.org||"")+(r.supplier||"")).indexOf(q)>-1; });
+  if(only) rows = rows.filter(function(r){ var f=fit(r.title,r.org,null,r.amount); return f&&f.ok; });
+  var h = "";
+  if(!rows.length){ h = '<div class="notice">조건에 맞는 재계약 건이 없습니다.</div>'; }
+  for(var i=0;i<rows.length;i++){
+    if(i===FREE_REN) h += gate("<b>"+(rows.length-FREE_REN)+"건 더</b> 있습니다. 전체 목록과 매일 알림은 무료 체험 등록 후 열립니다.");
+    h += renCard(rows[i], i>=FREE_REN);
+  }
+  $("renList").innerHTML = h;
+}
+function renderBid(){
+  var q = norm($("qBid").value), only = $("fitBid").classList.contains("on");
+  var rows = (D.bids||[]).slice();
+  if(q) rows = rows.filter(function(b){ return norm(b.title+(b.org||"")).indexOf(q)>-1; });
+  if(only) rows = rows.filter(function(b){ var f=fit(b.title,b.org,b.region,b.value); return f&&f.ok; });
+  var h = "";
+  if(!rows.length){ h = '<div class="notice">조건에 맞는 공고가 없습니다.</div>'; }
+  for(var i=0;i<rows.length;i++){
+    if(i===FREE_BID) h += gate("<b>"+(rows.length-FREE_BID)+"건 더</b> 있습니다. 전체 목록은 무료 체험 등록 후 열립니다.");
+    h += bidCard(rows[i], i>=FREE_BID);
+  }
+  $("bidList").innerHTML = h;
+}
+function renderHome(){
+  var rens = (D.renewals||[]).slice().sort(function(a,b){return a.d_day-b.d_day;});
+  var bids = (D.bids||[]).filter(function(b){return b.d_close==null||b.d_close>=0;});
+  var week = bids.filter(function(b){return b.d_close!=null&&b.d_close<=7;}).length;
+  $("kRen").textContent = rens.length;
+  $("kBid").textContent = bids.length;
+  $("kWeek").textContent = week;
+
+  var p = [];
+  if(rens.length){
+    var r0 = rens[0];
+    p.push('추적 중인 계약 <span class="num">'+rens.length+'건</span>이 240일 안에 만기됩니다. '
+      +'가장 임박한 건은 <span class="hl">'+esc(r0.org||"")+'</span>의 「'+esc(r0.title)+'」 — '
+      +'<span class="num">D-'+r0.d_day+'</span>'
+      +(r0.supplier?', 현재 수행업체는 '+esc(r0.supplier)+'입니다.':'.')
+      +' 만기 전이 기존 업체가 가장 방심하는 구간입니다.');
+    var d90 = rens.filter(function(r){return r.d_day<=90;}).length;
+    if(d90) p.push('그중 <span class="hl">'+d90+'건은 D-90 안</span>에 있습니다. 재발주 규격이 굳기 전, 지금이 담당 기관을 접촉할 시점입니다.');
+  }
+  if(week) p.push('입찰 마감이 7일 안으로 들어온 공고가 <span class="num">'+week+'건</span>입니다.');
+  if(!p.length) p.push('매일 06:00(KST) 자동 수집이 첫 데이터를 쌓는 중입니다. 다음 갱신 후 다시 확인해 주십시오.');
+  $("brief").innerHTML = p.map(function(t){return "<p>"+t+"</p>";}).join("");
+
+  var h = "";
+  for(var i=0;i<Math.min(3,rens.length);i++) h += renCard(rens[i], false);
+  if(!rens.length) h = '<div class="notice">표시할 재계약 건이 아직 없습니다.</div>';
+  $("homeTop").innerHTML = h;
+}
+
+/* ---- 탭/이벤트 ---- */
+function show(p){
+  var panes = document.querySelectorAll(".tabpane"), btns = document.querySelectorAll("nav button");
+  panes.forEach(function(x){ x.classList.remove("on"); });
+  btns.forEach(function(x){ x.classList.toggle("on", x.dataset.p===p); });
+  $("p-"+p).classList.add("on");
+  window.scrollTo(0,0);
+}
+document.querySelectorAll("nav button").forEach(function(b){
+  b.onclick = function(){ show(b.dataset.p); };
+});
+$("qRen").oninput = renderRen;
+$("qBid").oninput = renderBid;
+$("fitRen").onclick = function(){ this.classList.toggle("on"); renderRen(); };
+$("fitBid").onclick = function(){ this.classList.toggle("on"); renderBid(); };
+$("cta1").href = ctaHref();
+
+$("mySave").onclick = function(){
+  var kw = $("myKw").value.split(",").map(function(s){return s.trim();}).filter(Boolean);
+  var pref = {
+    kw: kw,
+    region: $("myRegion").value.trim(),
+    min: $("myMin").value===""?null:Number($("myMin").value),
+    max: $("myMax").value===""?null:Number($("myMax").value)
+  };
+  try{ localStorage.setItem("d90pref", JSON.stringify(pref)); }catch(e){}
+  PREF = pref;
+  $("mySaved").style.display = "block";
+  renderHome(); renderRen(); renderBid();
+};
+$("myClear").onclick = function(){
+  try{ localStorage.removeItem("d90pref"); }catch(e){}
+  PREF = null;
+  $("myKw").value=$("myRegion").value=$("myMin").value=$("myMax").value="";
+  $("mySaved").style.display = "none";
+  renderHome(); renderRen(); renderBid();
+};
+
+/* ---- 부팅 ---- */
+loadPref();
+if(PREF){
+  $("myKw").value = (PREF.kw||[]).join(", ");
+  $("myRegion").value = PREF.region||"";
+  if(PREF.min!=null) $("myMin").value = PREF.min;
+  if(PREF.max!=null) $("myMax").value = PREF.max;
+}
+fetch("../data/kr.json?v="+Date.now()).then(function(r){return r.json();}).then(function(d){
+  D = d;
+  $("asof").textContent = "기준일 "+(d.as_of||"—")+" · 출처: 조달청 나라장터 · 매일 06:00 KST 자동 갱신";
+  renderHome(); renderRen(); renderBid();
+}).catch(function(){
+  $("asof").textContent = "데이터를 불러오지 못했습니다 — 네트워크 확인 후 새로고침해 주십시오.";
+  D = {bids:[],renewals:[]};
+  renderHome(); renderRen(); renderBid();
+});
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("sw.js").catch(function(){});
+}
+</script>
+</body>
+</html>
