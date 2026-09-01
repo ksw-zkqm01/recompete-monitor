@@ -17,6 +17,10 @@ on:
         description: "계약 수집 종료 기준: 오늘-N일 (과거 심층 백필용, 기본 0)"
         required: false
         default: "0"
+      scsbid_days:
+        description: "낙찰 수집 일수 (기본 2 — 백필은 14 단위로 나눠 실행)"
+        required: false
+        default: "2"
 
 permissions:
   contents: write
@@ -32,6 +36,7 @@ env:
   BID_DAYS: ${{ github.event.inputs.bid_days || '7' }}
   CT_DAYS: ${{ github.event.inputs.contract_days || '7' }}
   CT_OFFSET: ${{ github.event.inputs.contract_offset || '0' }}
+  SCS_DAYS: ${{ github.event.inputs.scsbid_days || '2' }}
 
 jobs:
   build:
@@ -57,6 +62,7 @@ jobs:
           python run_kr.py init
           python run_kr.py collect --days $BID_DAYS
           python run_kr.py collect-contracts2 --days $CT_DAYS --offset $CT_OFFSET
+          python run_kr.py collect-scsbid --days $SCS_DAYS
           python run_kr.py merge-store
 
       # 미국 APFS 라이브 수집 + 정적 사이트 빌드

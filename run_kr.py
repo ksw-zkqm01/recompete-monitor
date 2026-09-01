@@ -178,6 +178,7 @@ def cmd_merge_store(a):
 
     nb = copy("bid", "bid_ntce_nm")
     nc = copy("contract", "contract_name")
+    ns = copy("scsbid", "notice_name")   # 낙찰 이력 — 수주실적·고착도 배점의 근거
 
     today = date.today()
     bid_cut = (today - timedelta(days=a.bid_keep)).strftime("%Y%m%d")
@@ -193,17 +194,22 @@ def cmd_merge_store(a):
                      "AND period_end <> '' AND period_end < ?", (ct_cut,)).rowcount
     d3 = dst.execute("DELETE FROM contract WHERE (period_end IS NULL OR period_end='') "
                      "AND concl_date IS NOT NULL AND concl_date < ?", (old_cut,)).rowcount
+    # 낙찰 이력은 2년 보존 (실적·고착도 판단 근거)
+    scs_cut = (today - timedelta(days=730)).strftime("%Y-%m-%d")
+    d4 = dst.execute("DELETE FROM scsbid WHERE opening_date IS NOT NULL "
+                     "AND opening_date <> '' AND opening_date < ?", (scs_cut,)).rowcount
     dst.commit()
     dst.execute("VACUUM")
     tb = dst.execute("SELECT COUNT(*) FROM bid").fetchone()[0]
     tc = dst.execute("SELECT COUNT(*) FROM contract").fetchone()[0]
     tp = dst.execute("SELECT COUNT(*) FROM contract WHERE period_end IS NOT NULL "
                      "AND period_end <> ''").fetchone()[0]
-    print(f"OK  병합(+): 공고 {nb:,}건 / 계약 {nc:,}건  — '{a.industry}' 키워드 일치분만")
-    print(f"OK  정리(-): 마감 {a.bid_keep}일 지난 공고 {d1:,}건 / "
-          f"종료 {a.ct_keep}일 지난 계약 {d2:,}건 / 체결 400일 지난 기간미상 계약 {d3:,}건")
-    print(f"OK  저장소 누적: 공고 {tb:,}건 / 계약 {tc:,}건 "
-          f"(기간정보 보유 {tp:,}건) -> data/kr_store.sqlite3")
+    ts = dst.execute("SELECT COUNT(*) FROM scsbid").fetchone()[0]
+    print(f"OK  병합(+): 공고 {nb:,} / 계약 {nc:,} / 낙찰 {ns:,}건 — '{a.industry}' 키워드 일치분만")
+    print(f"OK  정리(-): 마감지난 공고 {d1:,} / 종료지난 계약 {d2:,} / "
+          f"기간미상 오래된 계약 {d3:,} / 2년 지난 낙찰 {d4:,}건")
+    print(f"OK  저장소 누적: 공고 {tb:,} / 계약 {tc:,}(기간보유 {tp:,}) / "
+          f"낙찰 {ts:,}건 -> data/kr_store.sqlite3")
 
 
 def cmd_leads(a):
