@@ -28,6 +28,31 @@
 **Signal score:** 59/100
 
 ---
+## [ACTION NOW] Cyber Security Support Services  (C3S) - Operations II  (C3S-OPS II)
+**Agency:** USCIS  
+**Incumbent:** AretecSDB, LLC  
+**Current contract:** 70SBUR23F00000064  
+**NAICS:** 541519 - Other Computer Related Services  
+**Lane:** 8(a) / True  
+**Value:** $50M to $100M  
+**Key date:** 2026-09-08  
+**PoP end:** 2030-12-15
+
+### Trigger
+- [HIGH] Estimated solicitation release: 2026-09-01 -> 2026-09-08
+
+### Why this matters
+- The estimated solicitation date moved. The acquisition schedule is still being managed, which shifts teaming, staffing, pricing and the whole capture calendar.
+
+### Recommended actions
+1. Check SAM.gov for a new RFI / RFQ / solicitation and its attachments
+2. Re-book proposal staff and partners against the new date
+3. Refresh incumbent-displacement analysis
+
+**Source:** https://apfs-cloud.dhs.gov/forecast/70136/
+**Signal score:** 59/100
+
+---
 ## [ACTION NOW] Nemesis
 **Agency:** ICE/HSI  
 **Incumbent:** Child Rescue Coalition (CRC)  
@@ -49,6 +74,30 @@
 3. Identify the competitive lane and vehicle
 
 **Source:** https://apfs-cloud.dhs.gov/forecast/75316/
+**Signal score:** 57/100
+
+---
+## [ACTION NOW] Architecture, Development, Engineering, and Management Services (ADEMS)
+**Agency:** DHS HQ/MGMT  
+**Incumbent:** ECF Federal LLC  
+**Current contract:** 70RTAC25FR0000053  
+**NAICS:** 541512 - Computer Systems Design Services  
+**Value:** $10M to $20M  
+**Key date:** 2026-09-07  
+**PoP end:** 2028-09-22
+
+### Trigger
+- [HIGH] NEW
+
+### Why this matters
+- A new requirement appeared in the forecast.
+
+### Recommended actions
+1. Confirm follow-on status and the current incumbent
+2. Check SAM.gov for prior Sources Sought or RFI activity
+3. Identify the competitive lane and vehicle
+
+**Source:** https://apfs-cloud.dhs.gov/forecast/74784/
 **Signal score:** 57/100
 
 ---
@@ -198,56 +247,6 @@
 3. Identify the competitive lane and vehicle
 
 **Source:** https://apfs-cloud.dhs.gov/forecast/75258/
-**Signal score:** 52/100
-
----
-## [ACTION NOW] Palo Alto Hardware Maintenance Renewal
-**Agency:** USCIS  
-**Incumbent:** Swish Data Corporation  
-**Current contract:** 70SBUR26F00000064  
-**NAICS:** 541519 - Other Computer Related Services  
-**Lane:** HUBZone  
-**Value:** $1M to $2M  
-**Key date:** 2027-01-20  
-**PoP end:** 2028-03-05
-
-### Trigger
-- [HIGH] NEW
-
-### Why this matters
-- A new requirement appeared in the forecast.
-
-### Recommended actions
-1. Confirm follow-on status and the current incumbent
-2. Check SAM.gov for prior Sources Sought or RFI activity
-3. Identify the competitive lane and vehicle
-
-**Source:** https://apfs-cloud.dhs.gov/forecast/75267/
-**Signal score:** 52/100
-
----
-## [ACTION NOW] Senzing License Renewal
-**Agency:** USCIS  
-**Incumbent:** GOVSMART Inc.  
-**Current contract:** 70SBUR24F00000273  
-**NAICS:** 541519 - Other Computer Related Services  
-**Lane:** 8(a) / True  
-**Value:** $500K to $1M  
-**Key date:** 2027-08-20  
-**PoP end:** 2028-09-29
-
-### Trigger
-- [HIGH] NEW
-
-### Why this matters
-- A new requirement appeared in the forecast.
-
-### Recommended actions
-1. Confirm follow-on status and the current incumbent
-2. Check SAM.gov for prior Sources Sought or RFI activity
-3. Identify the competitive lane and vehicle
-
-**Source:** https://apfs-cloud.dhs.gov/forecast/75270/
 **Signal score:** 52/100
 
 ---
