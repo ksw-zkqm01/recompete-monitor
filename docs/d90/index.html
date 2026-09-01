@@ -118,9 +118,9 @@ nav button.on{color:var(--navy);border-top-color:var(--red);font-weight:700}
   <p class="secttl">지금 주시할 재계약 3건</p>
   <div id="homeTop"></div>
   <div class="gate">
-    <p><b>전체 목록 + 매일 아침 알림</b>은 무료 체험 등록 후 이용할 수 있습니다.<br>
-    회사 조건(지역·면허·금액대)에 맞는 건만 골라 보내드립니다.</p>
-    <a class="btn" id="cta1" href="#">무료 체험 신청 (3회 무료)</a>
+    <p>여기 보이는 건 <b>전체 시장 공개 데이터</b>입니다.<br>
+    <b>우리 회사 조건(실적·면허·지역·금액대)으로 점수 매긴 맞춤 분석</b>이 필요하면 —</p>
+    <a class="btn" id="cta1" href="#">맞춤 스코어링 리포트 신청</a>
   </div>
 </section>
 
@@ -179,7 +179,7 @@ nav button.on{color:var(--navy);border-top-color:var(--red);font-weight:700}
 <script>
 "use strict";
 var MAIL = "zkqm01@gmail.com";
-var FREE_REN = 3, FREE_BID = 10;
+var FREE_REN = 99999, FREE_BID = 99999;  // 전면 공개 — 유료 경계는 '맞춤 스코어링 리포트'
 var D = null, PREF = null;
 
 function $(id){ return document.getElementById(id); }
@@ -261,7 +261,7 @@ function gate(msg){
     +'<a class="btn" href="'+ctaHref()+'">무료 체험 신청 (3회 무료)</a></div>';
 }
 function ctaHref(){
-  var s = encodeURIComponent("[D-90] 무료 체험 신청");
+  var s = encodeURIComponent("[D-90] 맞춤 스코어링 리포트 문의");
   var b = encodeURIComponent("아래 항목을 적어 보내주시면, 조건에 맞는 재계약·공고 리포트를 3회 무료로 보내드립니다.\n\n회사명:\n업종:\n지역:\n보유 면허:\n관심 키워드:\n최소~최대 사업금액:\n\n(광고성 정보 수신 및 개인정보 수집·이용에 동의합니다)");
   return "mailto:"+MAIL+"?subject="+s+"&body="+b;
 }
