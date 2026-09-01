@@ -1,6 +1,31 @@
 # Capture Trigger Brief — 2026-09-01
 
-**8 trigger(s) changed.** Only changes are listed. No change means nothing is sent.
+**10 trigger(s) changed.** Only changes are listed. No change means nothing is sent.
+
+---
+## [ACTION NOW] Forensic Technology Training Bundles
+**Agency:** ICE/HSI  
+**Incumbent:** Impres Technology  
+**Current contract:** 70CMSD26FR0000043  
+**NAICS:** 541519 - Other Computer Related Services  
+**Lane:** SB  
+**Value:** $500K to $1M  
+**Key date:** 2026-09-10  
+**PoP end:** 2026-11-30
+
+### Trigger
+- [HIGH] NEW
+
+### Why this matters
+- A new requirement appeared in the forecast.
+
+### Recommended actions
+1. Confirm follow-on status and the current incumbent
+2. Check SAM.gov for prior Sources Sought or RFI activity
+3. Identify the competitive lane and vehicle
+
+**Source:** https://apfs-cloud.dhs.gov/forecast/74790/
+**Signal score:** 59/100
 
 ---
 ## [ACTION NOW] Nemesis
@@ -50,6 +75,31 @@
 
 **Source:** https://apfs-cloud.dhs.gov/forecast/75268/
 **Signal score:** 57/100
+
+---
+## [ACTION NOW] FY27 Oracle JAVA SE Universal Subscriptions Enterprise-wide
+**Agency:** USCG/CG-C5I  
+**Incumbent:** Strategic Communications LLC  
+**Current contract:** 70Z07926FALD00002  
+**NAICS:** 541519 - Other Computer Related Services  
+**Lane:** SB / True  
+**Value:** $2M to $5M  
+**Key date:** 2027-04-01  
+**PoP end:** 2028-07-31
+
+### Trigger
+- [HIGH] NEW
+
+### Why this matters
+- A new requirement appeared in the forecast.
+
+### Recommended actions
+1. Confirm follow-on status and the current incumbent
+2. Check SAM.gov for prior Sources Sought or RFI activity
+3. Identify the competitive lane and vehicle
+
+**Source:** https://apfs-cloud.dhs.gov/forecast/75274/
+**Signal score:** 55/100
 
 ---
 ## [ACTION NOW] Apigee Software Maintenance
